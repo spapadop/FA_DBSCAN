@@ -30,4 +30,20 @@ public class Cluster {
         }
         return res;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public HashSet<Point> getPoints() {
+        return points;
+    }
+
+    public void setPoints(HashSet<Point> points) {
+        this.points = points;
+    }
 }

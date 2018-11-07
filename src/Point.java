@@ -12,6 +12,12 @@ public class Point {
         visited = false;
     }
 
+    public Point(double dimX, double dimY){
+        this.x = dimX;
+        this.y = dimY;
+        visited = false;
+    }
+
     public double getX() {
         return x;
     }
