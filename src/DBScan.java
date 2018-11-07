@@ -16,7 +16,7 @@ public class DBScan {
     public DBScan(){
         points = new HashSet<>();
         clusters = new HashSet<>();
-        readData("C:\\Users\\sokpa\\Desktop\\input.txt");
+        readData("input.txt");
 
         Cluster currentCluster;
         clusterCounter = 0;
@@ -80,6 +80,7 @@ public class DBScan {
             //read first line to get column count and starting row count.
 
             String[] attr = null;
+            line = br.readLine(); //remove header
             if ((line = br.readLine()) != null) {
                 attr = line.split("\t");
             }
