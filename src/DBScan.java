@@ -41,19 +41,15 @@ public class DBScan {
         p.setVisited(true);
         p.setLabel("Core");
         cluster.addPoint(p);
-
-        Iterator<Point> it = neighbours.iterator();
-        Point currentPoint;
-        while(it.hasNext()){
-            currentPoint = it.next();
-            if(currentPoint.isVisited() == false){
-                currentPoint.setVisited(true);
-                HashSet<Point> neighboursPts  = regionQuery(currentPoint);
+        for(Point k: neighbours){
+            if(!k.isVisited()){
+                k.setVisited(true);
+                HashSet<Point> neighboursPts  = regionQuery(k);
                 if(neighboursPts.size() >= minPoints){
-                    neighbours.addAll(neighboursPts);
+//                    neighbours.addAll(neighboursPts);
                 }
-            } if(Cluster.isInACluster(clusters,currentPoint)) {
-                cluster.addPoint(currentPoint);
+            } if(Cluster.isInACluster(clusters,k)) {
+                cluster.addPoint(k);
             }
         }
     }
