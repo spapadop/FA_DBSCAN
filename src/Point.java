@@ -4,20 +4,19 @@ public class Point {
 
     private double x;
     private double y;
-    //private double z;
-    private boolean visited;
     private String label;
+    private int cluster;
 
     public Point(){
         x = 0; y = 0;
-        visited = false;
         label = "";
     }
 
-    public Point(double dimX, double dimY){
-        this.x = dimX;
-        this.y = dimY;
-        visited = false;
+    public Point(double x, double y){
+        this.x = x;
+        this.y = y;
+        this.label = "Undefined";
+        this.cluster = -1;
     }
 
     public double getX() {
@@ -36,14 +35,6 @@ public class Point {
         this.y = y;
     }
 
-    public boolean isVisited() {
-        return visited;
-    }
-
-    public void setVisited(boolean visited) {
-        this.visited = visited;
-    }
-
     public String getLabel() {
         return label;
     }
@@ -57,7 +48,13 @@ public class Point {
         return dist;
     }
 
+    public int getCluster() {
+        return cluster;
+    }
 
+    public void setCluster(int cluster) {
+        this.cluster = cluster;
+    }
 
     @Override
     public boolean equals(Object o) {

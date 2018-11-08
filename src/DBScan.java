@@ -22,36 +22,41 @@ public class DBScan {
         readData("input.txt");
 
         for(Point p: points){
-            if(p.isVisited() == false){ //unvisited point
+            if(p.getLabel().equals("Undefined")){ //point is unclassified
                 HashSet<Point> neighbours = regionQuery(p);
-                if(neighbours.size()< minPoints){
-                    p.setVisited(true);
+                if(neighbours.size() < minPoints){
                     p.setLabel("Noise");
                 } else {
                     Cluster cluster = new Cluster(clusterCounter++);
+                    p.setLabel("Core");
+                    p.setCluster(cluster.getId());
+                    cluster.addPoint(p);
                     expandCluster(p, neighbours, cluster);
+                    clusters.add(cluster);
                 }
             }
         }
-
         print();
     }
 
     private void expandCluster(Point p, HashSet<Point> neighbours, Cluster cluster){
-        p.setVisited(true);
-        p.setLabel("Core");
-        cluster.addPoint(p);
+        HashSet<Point> newPointsToAdd = new HashSet<>();
         for(Point k: neighbours){
-            if(!k.isVisited()){
-                k.setVisited(true);
+            if(k.getLabel().equals("Undefined")){ //point is unclassified
                 HashSet<Point> neighboursPts  = regionQuery(k);
-                if(neighboursPts.size() >= minPoints){
-//                    neighbours.addAll(neighboursPts);
+                if(neighboursPts.size() >= minPoints){ //join into neighbours
+                    for(Point n: neighboursPts){
+                        if (!neighbours.contains(n) && !n.equals(p)){
+                            newPointsToAdd.add(n);
+                        }
+                    }
                 }
-            } if(Cluster.isInACluster(clusters,k)) {
+            }
+            if(!Cluster.isInACluster(clusters,k)) {
                 cluster.addPoint(k);
             }
         }
+        neighbours.addAll(newPointsToAdd);
     }
 
     private HashSet<Point> regionQuery(Point origin){
@@ -83,7 +88,7 @@ public class DBScan {
 
     public void print(){
         for(Cluster cluster : clusters){
-            System.out.println("-----" + cluster.getId() + "-----");
+            System.out.println("----- Cluster Number: " + cluster.getId() + "-----");
             for(Point point: cluster.getPoints()){
                 System.out.println(point.getLabel() + ": (" + point.getX() +"," + point.getY() + ")");
             }
