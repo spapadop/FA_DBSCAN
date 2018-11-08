@@ -6,10 +6,12 @@ public class Point {
     private double y;
     //private double z;
     private boolean visited;
+    private String label;
 
     public Point(){
         x = 0; y = 0;
         visited = false;
+        label = "";
     }
 
     public Point(double dimX, double dimY){
@@ -42,10 +44,20 @@ public class Point {
         this.visited = visited;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     public double getDistanceFrom(Point otherPoint){
-        double dist = Math.pow(this.x - otherPoint.x,2) + Math.pow(this.y - otherPoint.y,2);
+        double dist = Math.sqrt(Math.pow(this.x - otherPoint.x,2) + Math.pow(this.y - otherPoint.y,2));
         return dist;
     }
+
+
 
     @Override
     public boolean equals(Object o) {

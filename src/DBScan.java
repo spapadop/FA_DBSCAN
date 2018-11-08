@@ -21,15 +21,15 @@ public class DBScan {
         clusters = new HashSet<>();
         readData("input.txt");
 
-        Cluster currentCluster;
         for(Point p: points){
             if(p.isVisited() == false){ //unvisited point
                 HashSet<Point> neighbours = regionQuery(p);
                 if(neighbours.size()< minPoints){
                     p.setVisited(true);
+                    p.setLabel("Noise");
                 } else {
                     Cluster cluster = new Cluster(clusterCounter++);
-                    expandCluster(p,neighbours, cluster);
+                    expandCluster(p, neighbours, cluster);
                 }
             }
         }
@@ -39,7 +39,9 @@ public class DBScan {
 
     private void expandCluster(Point p, HashSet<Point> neighbours, Cluster cluster){
         p.setVisited(true);
+        p.setLabel("Core");
         cluster.addPoint(p);
+
         Iterator<Point> it = neighbours.iterator();
         Point currentPoint;
         while(it.hasNext()){
@@ -54,7 +56,6 @@ public class DBScan {
                 cluster.addPoint(currentPoint);
             }
         }
-
     }
 
     private HashSet<Point> regionQuery(Point origin){
@@ -88,7 +89,7 @@ public class DBScan {
         for(Cluster cluster : clusters){
             System.out.println("-----" + cluster.getId() + "-----");
             for(Point point: cluster.getPoints()){
-                System.out.println("(" + point.getX() +"," + point.getY() + ")");
+                System.out.println(point.getLabel() + ": (" + point.getX() +"," + point.getY() + ")");
             }
         }
     }
