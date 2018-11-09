@@ -2,6 +2,7 @@ import java.util.Objects;
 
 public class Point {
 
+    private int id;
     private double x;
     private double y;
     private String label;
@@ -12,48 +13,17 @@ public class Point {
         label = "";
     }
 
-    public Point(double x, double y){
+    public Point(int id, double x, double y){
+        this.id = id;
         this.x = x;
         this.y = y;
         this.label = "Undefined";
         this.cluster = -1;
     }
 
-    public double getX() {
-        return x;
-    }
-
-    public double getY() {
-        return y;
-    }
-
-    public void setX(double x) {
-        this.x = x;
-    }
-
-    public void setY(double y) {
-        this.y = y;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
     public double getDistanceFrom(Point otherPoint){
         double dist = Math.sqrt(Math.pow(this.x - otherPoint.x,2) + Math.pow(this.y - otherPoint.y,2));
         return dist;
-    }
-
-    public int getCluster() {
-        return cluster;
-    }
-
-    public void setCluster(int cluster) {
-        this.cluster = cluster;
     }
 
     @Override
@@ -69,4 +39,33 @@ public class Point {
     public int hashCode() {
         return Objects.hash(x, y);
     }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public int getCluster() {
+        return cluster;
+    }
+
+    public void setCluster(int cluster) {
+        this.cluster = cluster;
+    }
+
 }
