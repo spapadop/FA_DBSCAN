@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 public class DBScan {
 
@@ -25,38 +26,43 @@ public class DBScan {
             if(p.getLabel().equals("Undefined")){ //point is unclassified
                 HashSet<Point> neighbours = regionQuery(p);
                 if(neighbours.size() < minPoints){
-                    p.setLabel("Noise");
+                        p.setLabel("Noise");
                 } else {
                     Cluster cluster = new Cluster(clusterCounter++);
                     p.setLabel("Core");
                     p.setCluster(cluster.getId());
                     cluster.addPoint(p);
-                    expandCluster(p, neighbours, cluster);
-                    clusters.add(cluster);
+
+                    clusters.add(expandCluster(p, neighbours, cluster));
                 }
             }
         }
         print();
     }
 
-    private void expandCluster(Point p, HashSet<Point> neighbours, Cluster cluster){
-        HashSet<Point> newPointsToAdd = new HashSet<>();
-        for(Point k: neighbours){
-            if(k.getLabel().equals("Undefined")){ //point is unclassified
+    private Cluster expandCluster(Point p, HashSet<Point> neighbours, Cluster cluster){
+        List<Point> newPointsToAdd = new ArrayList<>();
+        newPointsToAdd.addAll(neighbours);
+        for(int i = 0; i < newPointsToAdd.size(); i++){
+            Point k = newPointsToAdd.get(i);
+            if(k.getLabel().equals("Undefined") || k.getLabel().equals("Noise")){ //point is unclassified
                 HashSet<Point> neighboursPts  = regionQuery(k);
                 if(neighboursPts.size() >= minPoints){ //join into neighbours
-                    for(Point n: neighboursPts){
-                        if (!neighbours.contains(n) && !n.equals(p)){
-                            newPointsToAdd.add(n);
+                    k.setLabel("Core");
+                    for (Point k2 : neighboursPts){
+                        if (!newPointsToAdd.contains(k2)) {
+                            newPointsToAdd.add(k);
                         }
                     }
+                }else{
+                    k.setLabel("Border");
                 }
             }
             if(!Cluster.isInACluster(clusters,k)) {
                 cluster.addPoint(k);
             }
         }
-        neighbours.addAll(newPointsToAdd);
+        return cluster;
     }
 
     private HashSet<Point> regionQuery(Point origin){
@@ -92,6 +98,12 @@ public class DBScan {
             for(Point point: cluster.getPoints()){
                 System.out.println(point.getLabel() + ": (" + point.getX() +"," + point.getY() + ")");
             }
+        }
+
+        System.out.println("-----------------------------");
+
+        for(Point p: points){
+            System.out.println(p.getLabel() + ": (" + p.getX() +"," + p.getY() + ")");
         }
     }
 }
