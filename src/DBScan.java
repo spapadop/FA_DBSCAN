@@ -3,16 +3,15 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 public class DBScan {
 
-    private HashSet<Point> points;
-    private HashSet<Cluster> clusters;
-    private int minPoints;
-    private double eps;
-    private int clusterCounter;
+    protected HashSet<Point> points;
+    protected HashSet<Cluster> clusters;
+    protected int minPoints;
+    protected double eps;
+    protected int clusterCounter;
 
     public DBScan() {
         eps = 10;
@@ -39,7 +38,7 @@ public class DBScan {
         print();
     }
 
-    private Cluster expandCluster(Point p, HashSet<Point> neighbours, Cluster cluster) {
+    protected Cluster expandCluster(Point p, HashSet<Point> neighbours, Cluster cluster) {
         List<Point> newPointsToAdd = new ArrayList<>();
         newPointsToAdd.addAll(neighbours);
         for (int i = 0; i < newPointsToAdd.size(); i++) {
@@ -62,23 +61,28 @@ public class DBScan {
                 cluster.addPoint(k);
             }
         }
+        neighbours.addAll(newPointsToAdd);
         return cluster;
     }
 
-    private HashSet<Point> regionQuery(Point origin) {
+    /**
+     * Given a point "origin" returns all its neighbours according to the eps and minPoints thresholds.
+     * @param origin
+     * @return a set of neighbour points of given "origin" point
+     */
+    protected HashSet<Point> regionQuery(Point origin) {
         HashSet<Point> neighbours = new HashSet<>();
         for (Point p : points) {
-            if (!p.equals(origin) && origin.getDistanceFrom(p) < eps) {
+            if (!p.equals(origin) && origin.getDistanceFrom(p) <= eps) {
                 neighbours.add(p);
             }
         }
         return neighbours;
     }
 
-
-    private void readData(String path) {
+    protected void readData(String path) {
         String line = "";
-        int id = 0;
+        int id = 1;
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String[] attr = null;
             line = br.readLine(); //remove header
@@ -95,17 +99,21 @@ public class DBScan {
     public void print() {
         System.out.println("Total clusters: " + clusters.size());
         for (Cluster cluster : clusters) {
-            System.out.println("----- Cluster Number: " + cluster.getId() + "-----");
-            for (Point p : cluster.getPoints()) {
-                System.out.println("ID: " + p.getId() + " belongs_into: " + p.getCluster() + " as " + p.getLabel() + ": (" + p.getX() + "," + p.getY() + ")");
-            }
+            System.out.println("Cluster_" + cluster.getId() +" size:"+ cluster.getPoints().size());
         }
 
-        System.out.println("-----------------------------");
-        System.out.println("-----------------------------");
-
-        for (Point p : points) {
-            System.out.println("ID: " + p.getId() + " belongs_into: " + p.getCluster() + " as " + p.getLabel() + ": (" + p.getX() + "," + p.getY() + ")");
-        }
+//        for (Cluster cluster : clusters) {
+//            System.out.println("----- Cluster Number: " + cluster.getId() + "-----");
+//            for (Point p : cluster.getPoints()) {
+//                System.out.println("ID: " + p.getId() + " belongs_into: " + p.getCluster() + " as " + p.getLabel() + ": (" + p.getX() + "," + p.getY() + ")");
+//            }
+//        }
+//
+//        System.out.println("-----------------------------");
+//        System.out.println("-----------------------------");
+//
+//        for (Point p : points) {
+//            System.out.println(p.getId() + "\t" + p.getCluster() + "\t" + p.getLabel() + "\t" + p.getX() + "\t" + p.getY());
+//        }
     }
 }
