@@ -11,7 +11,6 @@ public class FADBScan extends DBScan{
     private double nCols;
 
 
-
     public FADBScan(){
         eps = 10;
         minPoints = 15;
@@ -21,12 +20,22 @@ public class FADBScan extends DBScan{
         readData("input.txt");
 
         cellWidth = eps/Math.sqrt(2);
-        calculateMaxDimensions();
+        calculateMinMaxDimensions();
         nRows = (maxX-minX)/cellWidth + 1;
+        nCols = (maxY-minY)/cellWidth + 1;
+
+//          7: Initialize G as an empty grid with size nCells = nRows × nCols
+//          8: for each point p 2 P do
+//          9: Add point p to G bp:x cellWidth − minX + 1c bp:y cellWidth − minY + 1c
+//          10: return G
+
 
     }
 
-    private void calculateMaxDimensions() {
+    /**
+     * calculates the min and max X and Y dimensions among all data points.
+     */
+    private void calculateMinMaxDimensions() {
         minX = Double.MAX_VALUE;
         minY = Double.MAX_VALUE;
         maxX = Double.MIN_VALUE;
@@ -37,9 +46,7 @@ public class FADBScan extends DBScan{
             if(p.getX() < minX){ minX = p.getX(); }
             if(p.getY() > maxY){ maxY = p.getY(); }
             if(p.getY() < minY){ minY = p.getY(); }
-
         }
-
     }
 
 }
