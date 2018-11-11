@@ -7,8 +7,8 @@ import java.util.List;
 
 public class DBScan {
 
-    protected HashSet<Point> points;
-    protected HashSet<Cluster> clusters;
+    protected List<Point> points;
+    protected List<Cluster> clusters;
     protected int minPoints;
     protected double eps;
     protected int clusterCounter;
@@ -17,8 +17,8 @@ public class DBScan {
         eps = 10;
         minPoints = 5;
         clusterCounter = 0;
-        points = new HashSet<>();
-        clusters = new HashSet<>();
+        points = new ArrayList<>();
+        clusters = new ArrayList<>();
         readData("input.txt");
 
         for (Point p : points) {

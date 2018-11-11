@@ -20,7 +20,7 @@ public class Cluster {
         return points.contains(p);
     }
 
-    public static boolean isInACluster(Set<Cluster> clusterList, Point p){
+    public static boolean isInACluster(List<Cluster> clusterList, Point p){
         boolean res = false;
         for(Cluster c : clusterList){
             if(c.existPoint(p)){

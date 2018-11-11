@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class FADBScan extends DBScan{
@@ -16,8 +17,8 @@ public class FADBScan extends DBScan{
         eps = 10;
         minPoints = 15;
         clusterCounter = 0;
-        points = new HashSet<>();
-        clusters = new HashSet<>();
+        points = new ArrayList<>();
+        clusters = new ArrayList<>();
         readData("input.txt");
 
         constructGrid(); //Step 1:  partition the data using a grid -hashmap
