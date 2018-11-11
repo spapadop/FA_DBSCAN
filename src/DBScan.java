@@ -24,7 +24,7 @@ public class DBScan {
         for (Point p : points) {
             if (p.getLabel().equals("Undefined")) { //point is unclassified
                 HashSet<Point> neighbours = regionQuery(p);
-                if (neighbours.size() < minPoints) {
+                if ((neighbours.size()+1) < minPoints) {
                     p.setLabel("Noise");
                 } else {
                     Cluster cluster = new Cluster(clusterCounter++);
@@ -45,11 +45,11 @@ public class DBScan {
             Point k = newPointsToAdd.get(i);
             if (k.getLabel().equals("Undefined") || k.getLabel().equals("Noise")) { //point is unclassified
                 HashSet<Point> neighboursPts = regionQuery(k);
-                if (neighboursPts.size() >= minPoints) { //join into neighbours
+                if ((neighboursPts.size()+1) >= minPoints) { //join into neighbours
                     k.setLabel("Core");
                     for (Point k2 : neighboursPts) {
                         if (!newPointsToAdd.contains(k2)) {
-                            newPointsToAdd.add(k);
+                            newPointsToAdd.add(k2);
                         }
                     }
                 } else {
