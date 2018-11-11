@@ -7,8 +7,9 @@ public class FADBScan extends DBScan{
     private double maxX;
     private double minY;
     private double maxY;
-    private double nRows;
-    private double nCols;
+    private int nRows;
+    private int nCols;
+    private Cell[][] grid;
 
 
     public FADBScan(){
@@ -19,16 +20,154 @@ public class FADBScan extends DBScan{
         clusters = new HashSet<>();
         readData("input.txt");
 
+        constructGrid(); //Step 1:  partition the data using a grid -hashmap
+        constructBoxes(); //Step 1:  partition the data using boxes -sorting
+
+        determineCorePoints(); //Step 2
+
+        mergingClusters(); //Step 3
+
+        DetermineBorderPoint(); //Step 4
+
+    }
+
+    private void DetermineBorderPoint() {
+
+        /* Algorithm 7
+        3: for each non-empty cells c 2 G do
+        4: for each point p 2 c do
+        5: if p is not a core point then
+        6: q NULL
+        7: for each cell c0 2 N"(c) do
+        8: tempP oint NearestCoreP oint(p; c0)
+        9: if dist(p; tempP oint) ≤ dist(p; q) then
+        10: q tempP oint
+        11: if q 6= NULL then
+        12: Assign point p to q’s cluster
+        13: else
+        14: Mark p as noise
+         */
+    }
+
+    private void mergingClusters() {
+
+        /*
+        This step is done based on the fact that if the distance between two core points in two
+        different cells is at most ", these two points belong to the same cluster. A simple example
+        is shown in Figure 3.4. This figure shows two neighboring cells, each contains four points.
+        Since minP ts = 3, we know that all of these points are core points. If the distance between a
+        and b is at most ", we can conclude that all of these eight points belong to the same cluster.
+        Otherwise, we conclude that there are two clusters with four points each
+         */
+    }
+
+    private void determineCorePoints() {
+
+        /*
+        Note that if we use Algorithm
+        3 when partitioning, it will gives us some empty cells inside the grid. To get the list of all
+        non-empty cells, we can simply create a new list, scan all the cells and add only the non-empty
+        cells to the list.
+         */
+
+        /* Algorithm 6
+        4: for each non-empty cell c 2 G do
+        5: if jcj > minPts then
+        6: Mark all points p 2 c as core points.
+        7: else
+        8: for each point p 2 c do
+        9: nPoints 0
+        10: for each cell nc 2 N"(c) do
+        11: for each point q 2 nc do
+        12: if dist(p; q) ≤ " then
+        13: nP oints nP oints + 1
+        14: if nP oint ≥ minP ts then
+        15: Mark p as a core point
+        16: break
+        17: if nP oint ≥ minP ts then
+        18: break
+         */
+    }
+
+    private void constructBoxes() {
+
+        cellWidth = eps/Math.sqrt(2);
+
+        /* Algorithm 4
+        3: cellWidth "=p2
+        4: Initialize G as an empty set of boxes
+        5: Sort P in x-coordinate
+        6: Initialize empty set of points strip
+        7: Add the first point P1 to strip
+        8: for i 2 to jPj do
+        9: q first point of strip
+        10: if Pi:x > q:x + cellWidth then
+        11: AddStripT oGrid(G; strip; cellWidth)
+        12: Remove all points from strip
+        13: Add point Pi to strip
+        14: AddStripT oGrid(G; strip; cellWidth)
+        15: return G
+         */
+    }
+
+    private void addStripToGrid(){
+
+        /* Algorithm 5
+            4: Sort strip in y-coordinate
+            5: Initialize empty set of points Box
+            6: Add the first point of strip to Box
+            7: for i 2 to jPj do
+            8: q j-th point of strip
+            9: if q:y > Box1:y + cellWidth then
+            10: Add Box to G
+            11: Remove all points from Box
+            12: Add q to Box
+            13: Add Box to G
+         */
+    }
+
+    /**
+     * Implements the first step of FA-DBScan.
+     * It initializes appropriate thresholds (cellWidth, nRows,nCols) and calling calculateMinMaxDimensions()
+     * and classifies all data points into the proper cell in the grid
+     */
+    private void constructGrid(){
         cellWidth = eps/Math.sqrt(2);
         calculateMinMaxDimensions();
-        nRows = (maxX-minX)/cellWidth + 1;
-        nCols = (maxY-minY)/cellWidth + 1;
+        nRows = (int) ((maxX-minX)/cellWidth + 1);
+        nCols = (int) ((maxY-minY)/cellWidth + 1);
 
-//          7: Initialize G as an empty grid with size nCells = nRows × nCols
-//          8: for each point p 2 P do
-//          9: Add point p to G bp:x cellWidth − minX + 1c bp:y cellWidth − minY + 1c
-//          10: return G
+        /*
+            In the case of a point on the border of a cell,
+            we assign it in the top-right cell as shown in Figure 3.1, where x will be assigned to cell A
+            and y will be assigned to cell B. If at least one point is exactly on the top-most border or
+            right-most border of the grid, we will add an extra row / column to prevent it to be assigned
+            to the outside of the grid. For example, in Figure 3.1, an extra row is added because of point
+            p and an extra column is added because of point q. An algorithm to construct this is shown
+            in Algorithm 3.
+        */
 
+        grid = new Cell[nRows][nCols];
+        for(Point p: points){
+            int tempx; int tempy;
+            tempx = (int) ((p.getX()-minX)/cellWidth + 1);
+            tempy = (int) ((p.getY()-minY)/cellWidth + 1);
+            //TODO: Need to cater for exceptions (e.g. points in the borders of 2 cells)
+            grid[tempx][tempy].getList().add(p);
+        }
+
+        /* Algorithm 3
+        3: cellWidth "=p2
+        4: Initialize minX, maxX, minY , and maxY from P
+        5: nRows bmaxX − minX
+        cellWidth + 1c
+        6: nCols bmaxY − minY
+        cellWidth + 1c
+        7: Initialize G as an empty grid with size nCells = nRows × nCols
+        8: for each point p 2 P do
+        9: Add point p to G bp:x cellWidth − minX + 1c bp:y cellWidth − minY + 1c
+        10: return G
+         */
 
     }
 
