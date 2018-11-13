@@ -11,7 +11,6 @@ public class Grid {
 		 grid = new Cell [i] [j];
 	}
 
-
 	public double getCellWidth() {
 		return cellWidth;
 	}
@@ -58,6 +57,26 @@ public class Grid {
 					boolean colInBounds = (col >= 0) && (col < grid[row].length);
 					if (colInBounds) {
 						if ((row != i - 2 && col != j - 2) && (row != i + 2 && col != j + 2) && (row != i - 2 && col != j - 2) && (row != i + 2 && col != j - 2) && (row != i - 2 && col != j + 2)) { //taking out corners
+							nCells.add(grid[i][j]);
+						}
+					}
+				}
+			}
+		}
+
+		return nCells;
+	}
+
+	public List<Cell> calculateOnlyNeighboringCells(int i, int j) {
+		List<Cell> nCells = new ArrayList<>();
+
+		for (int row = i - 2; row < i + 2; row++) {
+			boolean rowInBounds = (row >= 0) && (row < grid.length);
+			if (rowInBounds) {
+				for (int col = j - 2; col < j + 2; col++) {
+					boolean colInBounds = (col >= 0) && (col < grid[row].length);
+					if (colInBounds) {
+						if ((row != i && col != j) && (row != i - 2 && col != j - 2) && (row != i + 2 && col != j + 2) && (row != i - 2 && col != j - 2) && (row != i + 2 && col != j - 2) && (row != i - 2 && col != j + 2)) { //taking out corners
 							nCells.add(grid[i][j]);
 						}
 					}

@@ -66,18 +66,37 @@ public class FADBScan extends Scan{
     }
 
 
+    /**
+     * Merging clusters
+     */
     private void mergingClusters() {
-
-        /*
-        This step is done based on the fact that if the distance between two core points in two
-        different cells is at most ", these two points belong to the same cluster. A simple example
-        is shown in Figure 3.4. This figure shows two neighboring cells, each contains four points.
-        Since minP ts = 3, we know that all of these points are core points. If the distance between a
-        and b is at most ", we can conclude that all of these eight points belong to the same cluster.
-        Otherwise, we conclude that there are two clusters with four points each
-         */
+        int clusterCnt = 0;
+        for (int i = 0; i < grid.getLength(); i++) {
+            for (int j = 0; j < grid.getColLength(i); j++) {
+                List<Cell> nCells = grid.calculateOnlyNeighboringCells(i,j);
+                Cell currentCell = grid.getCell(i,j);
+                for(Point p: currentCell.getList()){
+                    if(currentCell.getList().size()>minPoints && currentCell.getClusterNum()==-1){
+                        currentCell.setClusterNum(clusterCnt);
+                    }
+                    for(Cell c: nCells){
+                        if (c.getClusterNum() != -1){
+                            for(Point pn: c.getList()){
+                                if(p.getDistanceFrom(pn)<eps){
+                                    c.setClusterNum(clusterCnt);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
+    /**
+     * Determines the core points.
+     */
     private void determineCorePoints() {
         for (int i = 0; i < grid.getLength(); i++) { // for all rows of grid
             for (int j = 0; j < grid.getColLength(0); j++) { // for all columns of grid

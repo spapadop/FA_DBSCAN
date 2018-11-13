@@ -4,9 +4,11 @@ import java.util.List;
 
 public class Cell {
     private List<Point> list;
-    
+    private int clusterNum;
+
 
     public Cell(){
+        clusterNum =-1;
         list = new ArrayList<>();
     }
 
@@ -37,7 +39,15 @@ public class Cell {
     public void setPoint (int position, Point newPoint) {
     	list.set(position, newPoint);
     }
-    
+
+    public int getClusterNum() {
+        return clusterNum;
+    }
+
+    public void setClusterNum(int clusterNum) {
+        this.clusterNum = clusterNum;
+    }
+
     public Point  getNearestCorePoint (Point point) {
     	Point nearestCorePoint = null;
     	
