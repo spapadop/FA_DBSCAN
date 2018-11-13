@@ -47,4 +47,24 @@ public class Grid {
 		}
     	return neighborsList;
     }
+
+	public List<Cell> calculateNeighboringCells(int i, int j) {
+		List<Cell> nCells = new ArrayList<>();
+
+		for (int row = i - 2; row < i + 2; row++) {
+			boolean rowInBounds = (row >= 0) && (row < grid.length);
+			if (rowInBounds) {
+				for (int col = j - 2; col < j + 2; col++) {
+					boolean colInBounds = (col >= 0) && (col < grid[row].length);
+					if (colInBounds) {
+						if ((row != i - 2 && col != j - 2) && (row != i + 2 && col != j + 2) && (row != i - 2 && col != j - 2) && (row != i + 2 && col != j - 2) && (row != i - 2 && col != j + 2)) { //taking out corners
+							nCells.add(grid[i][j]);
+						}
+					}
+				}
+			}
+		}
+
+		return nCells;
+	}
 }

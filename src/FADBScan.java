@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class FADBScan extends Scan{
 
@@ -82,31 +79,37 @@ public class FADBScan extends Scan{
     }
 
     private void determineCorePoints() {
-
-        /*
-        Note that if we use Algorithm
-        3 when partitioning, it will gives us some empty cells inside the grid. To get the list of all
-        non-empty cells, we can simply create a new list, scan all the cells and add only the non-empty
-        cells to the list.
-         */
-
-        /* Algorithm 6
-        4: for each non-empty cell c 2 G do
-        5: if jcj > minPts then
-        6: Mark all points p 2 c as core points.
-        7: else
-        8: for each point p 2 c do
-        9: nPoints 0
-        10: for each cell nc 2 N"(c) do
-        11: for each point q 2 nc do
-        12: if dist(p; q) ≤ " then
-        13: nP oints nP oints + 1
-        14: if nP oint ≥ minP ts then
-        15: Mark p as a core point
-        16: break
-        17: if nP oint ≥ minP ts then
-        18: break
-         */
+        for (int i = 0; i < grid.getLength(); i++) { // for all rows of grid
+            for (int j = 0; j < grid.getColLength(0); j++) { // for all columns of grid
+                int cellPoints =grid.getCell(i,j).getList().size();
+                if (cellPoints > minPoints) { //set all points of cell as Core
+                    for (Point p : grid.getCell(i,j).getList()) {
+                        p.setLabelCore();
+                    }
+                } else if (cellPoints != 0) {
+                    for (Point p : grid.getCell(i,j).getList()) { //of every point of the current cell
+                        Set<Point> numPoints = new HashSet<>(); //calculates number of neighbours (points with distance less than eps) TODO: Maybe simple int counter.
+                        List<Cell> nCells = grid.calculateNeighboringCells(i, j); //compute the cells within eps distance that can provide possible neighbor points
+                        for (Cell nc : nCells) { //for every such neighbor cell (with potential neighbor points)
+                            for (Point q : nc.getList()) {
+                                if (p.getDistanceFrom(q) <= eps) {
+                                    if (!numPoints.contains(q)) { //found new neighbor point
+                                        numPoints.add(q);
+                                    }
+                                    if (numPoints.size() >= minPoints) { // TODO: not sure. shall we count the same point as neighbor of itself?
+                                        p.setLabelCore();
+                                        break;
+                                    }
+                                }
+                            }
+                            if (numPoints.size() >= minPoints) {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void constructBoxes() {
