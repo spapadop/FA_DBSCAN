@@ -1,7 +1,9 @@
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
-public class FADBScan extends DBScan{
+public class FADBScan extends Scan{
 
     private double cellWidth;
     private double minX;
@@ -10,7 +12,7 @@ public class FADBScan extends DBScan{
     private double maxY;
     private int nRows;
     private int nCols;
-    private Cell[][] grid;
+    private Grid grid;
 
 
     public FADBScan(){
@@ -20,7 +22,11 @@ public class FADBScan extends DBScan{
         points = new ArrayList<>();
         clusters = new ArrayList<>();
         readData("input.txt");
-
+        
+        scan ();
+    }
+    
+    public void scan () {
         constructGrid(); //Step 1:  partition the data using a grid -hashmap
         constructBoxes(); //Step 1:  partition the data using boxes -sorting
 
@@ -29,26 +35,39 @@ public class FADBScan extends DBScan{
         mergingClusters(); //Step 3
 
         DetermineBorderPoint(); //Step 4
-
     }
 
     private void DetermineBorderPoint() {
-
-        /* Algorithm 7
-        3: for each non-empty cells c 2 G do
-        4: for each point p 2 c do
-        5: if p is not a core point then
-        6: q NULL
-        7: for each cell c0 2 N"(c) do
-        8: tempP oint NearestCoreP oint(p; c0)
-        9: if dist(p; tempP oint) ≤ dist(p; q) then
-        10: q tempP oint
-        11: if q 6= NULL then
-        12: Assign point p to q’s cluster
-        13: else
-        14: Mark p as noise
-         */
+    	grid = new Grid (grid.getLength(),grid.getColLength(0),eps);
+    	
+    	for (int i = 0; i < grid.getLength(); i++) {
+    		for (int j = 0; j < grid.getColLength(i); j++) {
+    			Cell currentCell = grid.getCell(i, j);    			
+    			int numberOfPoint = currentCell.getNumberOfPoints();
+    			if (numberOfPoint > 0) {
+    				for (int k = 0; k < numberOfPoint;k++){
+    					Point currentPoint = currentCell.getPoint(k);
+    					if (!currentPoint.isCore()) {
+    						Point q  = null;
+    						List<Cell> neighborCellsList = grid.getNeighborsOfCell(i,j);
+    						for (Cell neighborCell : neighborCellsList) {
+    							Point tempPoint = neighborCell.getNearestCorePoint(currentPoint);
+    							if (q == null || currentPoint.getDistanceFrom(tempPoint) <= currentPoint.getDistanceFrom(q)) {
+    								q = tempPoint;
+    							}
+    						}
+    						if (q != null) {
+    							currentPoint.setCluster(q.getCluster());
+    						}else {
+    							currentPoint.setLabelNoise();
+    						}
+    					}
+    				}
+    			}
+    		}
+    	}
     }
+
 
     private void mergingClusters() {
 
@@ -148,13 +167,13 @@ public class FADBScan extends DBScan{
             in Algorithm 3.
         */
 
-        grid = new Cell[nRows][nCols];
+        grid = new Grid (nRows,nCols,eps);
         for(Point p: points){
             int tempx; int tempy;
             tempx = (int) ((p.getX()-minX)/cellWidth + 1);
             tempy = (int) ((p.getY()-minY)/cellWidth + 1);
             //TODO: Need to cater for exceptions (e.g. points in the borders of 2 cells)
-            grid[tempx][tempy].getList().add(p);
+            grid.setPointInCell(tempx, tempy, p);
         }
 
         /* Algorithm 3

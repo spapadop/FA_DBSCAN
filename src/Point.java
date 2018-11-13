@@ -1,23 +1,25 @@
 import java.util.Objects;
 
+import com.sun.corba.se.impl.protocol.ServantCacheLocalCRDBase;
+
 public class Point {
 
     private int id;
     private double x;
     private double y;
-    private String label;
     private int cluster;
+    private PointLabel label;
 
     public Point(){
         x = 0; y = 0;
-        label = "";
+        setLabelUndefined();
     }
 
     public Point(int id, double x, double y){
         this.id = id;
         this.x = x;
         this.y = y;
-        this.label = "Undefined";
+        setLabelUndefined();
         this.cluster = -1;
     }
 
@@ -48,17 +50,14 @@ public class Point {
         return y;
     }
 
-    public String getLabel() {
-        return label;
-    }
+//    public PointLabel getLabel() {
+//        return label;
+//    }
 
     public int getId() {
         return id;
     }
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
 
     public int getCluster() {
         return cluster;
@@ -68,4 +67,31 @@ public class Point {
         this.cluster = cluster;
     }
 
+    public void setLabelBorder() {
+    	label = PointLabel.BORDER;
+    }
+    
+    public void setLabelCore() {
+    	label = PointLabel.CORE;
+    }
+    
+    public void setLabelNoise() {
+    	label = PointLabel.NOISE;
+    }
+    
+    public void setLabelUndefined() {
+    	label = PointLabel.UNDEFINED;
+    }
+    
+    public boolean isCore() {
+    	return label.equals(PointLabel.CORE);
+    }
+
+	public boolean isUndefined() {
+		return label.equals(PointLabel.UNDEFINED);
+	}
+
+	public boolean isNoise() {
+		return label.equals(PointLabel.NOISE);
+	}
 }
