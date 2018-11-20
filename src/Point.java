@@ -105,4 +105,8 @@ public class Point {
 	public boolean isNoise() {
 		return label.equals(PointLabel.NOISE);
 	}
+
+    public PointLabel getLabel() {
+        return label;
+    }
 }

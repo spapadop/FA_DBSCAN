@@ -30,27 +30,32 @@ public class FADBScan extends Scan{
         determineCorePoints(); //Step 2
 
         mergingClusters(); //Step 3
+
+        DetermineBorderPoint(); //Step 4
+
+
+        printing();
+
+    }
+
+    private void printing() {
         for(int i=0; i<nRows; i++){
-
             for(int j=0; j<nCols; j++){
-                if (!grid.getCell(i,j).isEmpty()){
+                if(grid.getCell(i,j).getClusterNum()!=-1){
                     System.out.println("CELL " + i + " " + j + " is on cluster: " + grid.getCell(i,j).getClusterNum() +  " " + grid.getCell(i,j).getList().size());
-
+                    for (Point p : grid.getCell(i,j).getList()){
+                        System.out.print(p.getLabel() + " ");
+                    }
+                    System.out.println();
                 }
 //                System.out.println("CELL " + i + " " + j + " is on cluster: " + grid.getCell(i,j).getClusterNum());
 //                System.out.println(grid.getCell(i,j).getList());
             }
         }
-
-        DetermineBorderPoint(); //Step 4
-
-
-
     }
 
     private void DetermineBorderPoint() {
-    	grid = new Grid (grid.getLength(),grid.getColLength(0),eps);
-    	
+
     	for (int i = 0; i < grid.getLength(); i++) {
     		for (int j = 0; j < grid.getColLength(i); j++) {
     			Cell currentCell = grid.getCell(i, j);    			
@@ -58,18 +63,27 @@ public class FADBScan extends Scan{
     			if (numberOfPoint > 0) {
     				for (int k = 0; k < numberOfPoint;k++){
     					Point currentPoint = currentCell.getPoint(k);
+
     					if (!currentPoint.isCore()) {
     						Point q  = null;
-    						List<Cell> neighborCellsList = grid.getNeighborsOfCell(i,j);
+    						List<Cell> neighborCellsList = grid.calculateNeighboringCells(i,j);
     						for (Cell neighborCell : neighborCellsList) {
-    							Point tempPoint = neighborCell.getNearestCorePoint(currentPoint);
-    							if (q == null || currentPoint.getDistanceFrom(tempPoint) <= currentPoint.getDistanceFrom(q)) {
-    								q = tempPoint;
-    							}
+    						    if (!neighborCell.isEmpty()) {
+                                    Point tempPoint = neighborCell.getNearestCorePoint(currentPoint);
+
+                                    if (q == null) {
+                                        q = tempPoint;
+                                    } else if (currentPoint.getDistanceFrom(tempPoint) <= currentPoint.getDistanceFrom(q)) {
+                                        q = tempPoint;
+                                    }
+                                }
     						}
+
     						if (q != null) {
     							currentPoint.setCluster(q.getCluster());
-    						}else {
+                                currentPoint.setLabelBorder();
+
+                            }else {
     							currentPoint.setLabelNoise();
     						}
     					}
@@ -89,7 +103,6 @@ public class FADBScan extends Scan{
                 Cell currentCell = grid.getCell(i,j);
                 if (currentCell.getClusterNum() != -1){
                     List<Cell> neighborCells = grid.calculateNeighboringCells(i,j);
-                    System.out.println("Neighbours: " + neighborCells.size());
                     for(Cell c: neighborCells) { // for every neighbor cell of the current cell we are checking
                         findNeighborCluster(currentCell, c);
                     }
@@ -117,11 +130,11 @@ public class FADBScan extends Scan{
         for (int i = 0; i < grid.getLength(); i++) { // for all rows of grid
             for (int j = 0; j < grid.getColLength(0); j++) { // for all columns of grid
                 int cellPoints =grid.getCell(i,j).getList().size();
-                if (cellPoints > minPoints) { //set all points of cell as Core
+                if (cellPoints >= minPoints) { //set all points of cell as Core
                     for (Point p : grid.getCell(i,j).getList()) {
                         p.setLabelCore();
-                        grid.getCell(i,j).setClusterNum(clusterCounter);
                     }
+                    grid.getCell(i,j).setClusterNum(clusterCounter);
                 } else if (cellPoints != 0) {
                     for (Point p : grid.getCell(i,j).getList()) { //of every point of the current cell
                         Set<Point> numPoints = new HashSet<>(); //calculates number of neighbours (points with distance less than eps) TODO: Maybe simple int counter.

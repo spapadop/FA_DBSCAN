@@ -39,18 +39,7 @@ public class Grid {
 	public int getColLength(int i) {
 		return grid[i].length;
 	}
-	
-	public List<Cell> getNeighborsOfCell (int rowPosition, int colPosition) {
-		List <Cell> neighborsList = new ArrayList<Cell>();
-		for (int i = -2; i <= 2; i++) {
-			for (int j = -2; j <= 2; j++) {
-				if ((rowPosition + i >=0) && (rowPosition + i >= getLength()) && (colPosition + j >=0) && (colPosition + i >= getColLength(colPosition)) && !((i%4==2) && (j%4==2)) ) {
-					neighborsList.add(getCell(i,j));
-				}
-			}
-		}
-    	return neighborsList;
-    }
+
 
 	public List<Cell> calculateNeighboringCells(int i, int j) {
 		List<Cell> nCells = new ArrayList<>();
@@ -61,14 +50,18 @@ public class Grid {
 				for (int col = j - 2; col <= j + 2; col++) {
 					boolean colInBounds = (col >= 0) && (col < grid[row].length);
 					if (colInBounds) {
-						if (!(row==i && col==j) && (row != i - 2 && col != j - 2) && (row != i + 2 && col != j + 2) && (row != i + 2 && col != j - 2) && (row != i - 2 && col != j + 2)) { //taking out corners
-							nCells.add(grid[i][j]);
+						boolean isCorner, isCenter;
+						isCenter = row == i && col == j;
+						isCorner = (row == i - 2 && col == j - 2) || (row == i + 2 && col == j + 2) || (row == i + 2 && col == j - 2) || (row == i - 2 && col == j + 2);
+
+						//if (!(row==i && col==j) && (row != i - 2 && col != j - 2) && (row != i + 2 && col != j + 2) && (row != i + 2 && col != j - 2) && (row != i - 2 && col != j + 2)) { //taking out corners
+						if (!isCenter && !isCorner) {
+							nCells.add(grid[row][col]);
 						}
 					}
 				}
 			}
 		}
-
 		return nCells;
 	}
 

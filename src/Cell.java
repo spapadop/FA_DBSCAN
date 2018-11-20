@@ -4,11 +4,13 @@ import java.util.List;
 public class Cell {
     private List<Point> list;
     private int clusterNum;
+    private boolean isCore;
 
 
     public Cell(){
         clusterNum =-1;
         list = new ArrayList<>();
+        isCore = false;
     }
 
     public void outputListElements(){
@@ -49,7 +51,16 @@ public class Cell {
         return clusterNum;
     }
 
+    public boolean isCore() {
+        return isCore;
+    }
+
+    public void setCore(boolean core) {
+        isCore = core;
+    }
+
     public void setClusterNum(int clusterNum) {
+        isCore = true;
         this.clusterNum = clusterNum;
         for(Point p: list){
             p.setCluster(clusterNum);
