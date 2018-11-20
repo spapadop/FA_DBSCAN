@@ -88,7 +88,8 @@ public class FADBScan extends Scan{
             for (int j = 0; j < grid.getColLength(i); j++) {
                 Cell currentCell = grid.getCell(i,j);
                 if (currentCell.getClusterNum() != -1){
-                    List<Cell> neighborCells = grid.calculateOnlyNeighboringCells(i,j);
+                    List<Cell> neighborCells = grid.calculateNeighboringCells(i,j);
+                    System.out.println("Neighbours: " + neighborCells.size());
                     for(Cell c: neighborCells) { // for every neighbor cell of the current cell we are checking
                         findNeighborCluster(currentCell, c);
                     }
