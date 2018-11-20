@@ -31,7 +31,7 @@ public class DBScan extends Scan {
                 }
             }
         }
-        print();
+        //print();
 	}
 
     protected Cluster expandCluster(Point p, HashSet<Point> neighbours, Cluster cluster) {

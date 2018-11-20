@@ -33,8 +33,7 @@ public class FADBScan extends Scan{
 
         DetermineBorderPoint(); //Step 4
 
-
-        printing();
+        //printing();
 
     }
 
@@ -42,11 +41,11 @@ public class FADBScan extends Scan{
         for(int i=0; i<nRows; i++){
             for(int j=0; j<nCols; j++){
                 if(grid.getCell(i,j).getClusterNum()!=-1){
-                    System.out.println("CELL " + i + " " + j + " is on cluster: " + grid.getCell(i,j).getClusterNum() +  " " + grid.getCell(i,j).getList().size());
-                    for (Point p : grid.getCell(i,j).getList()){
-                        System.out.print(p.getLabel() + " ");
-                    }
-                    System.out.println();
+                    System.out.println("CELL (" + i + "," + j + ") is-on-cluster: " + grid.getCell(i,j).getClusterNum() +  " " + grid.getCell(i,j).getList().size());
+//                    for (Point p : grid.getCell(i,j).getList()){
+//                        System.out.print(p.getLabel() + " ");
+//                    }
+//                    System.out.println();
                 }
 //                System.out.println("CELL " + i + " " + j + " is on cluster: " + grid.getCell(i,j).getClusterNum());
 //                System.out.println(grid.getCell(i,j).getList());
@@ -115,7 +114,7 @@ public class FADBScan extends Scan{
     private void findNeighborCluster(Cell currentCell, Cell neighborCell){
         for(Point p: currentCell.getList()){ //for every point of the current cell we are checking...
             for(Point pn: neighborCell.getList()){ //for every point in a neighbor cell
-                if(p.getDistanceFrom(pn)<eps){
+                if(p.getDistanceFrom(pn)<=eps){
                     neighborCell.setClusterNum(currentCell.getClusterNum());
                     return;
                 }
@@ -140,19 +139,19 @@ public class FADBScan extends Scan{
                         Set<Point> numPoints = new HashSet<>(); //calculates number of neighbours (points with distance less than eps) TODO: Maybe simple int counter.
                         List<Cell> nCells = grid.calculateNeighboringCells(i, j); //compute the cells within eps distance that can provide possible neighbor points
                         for (Cell nc : nCells) { //for every such neighbor cell (with potential neighbor points)
-                            for (Point q : nc.getList()) {
+                            for (Point q : nc.getList()) { //we examine all points of a neighbor
                                 if (p.getDistanceFrom(q) <= eps) {
                                     if (!numPoints.contains(q)) { //found new neighbor point
                                         numPoints.add(q);
                                     }
-                                    if (numPoints.size() >= minPoints) { // TODO: not sure. shall we count the same point as neighbor of itself?
+                                    if (numPoints.size() +1 >= minPoints) { // TODO: not sure. shall we count the same point as neighbor of itself?
                                         p.setLabelCore();
                                         grid.getCell(i,j).setClusterNum(clusterCounter);
                                         break;
                                     }
                                 }
                             }
-                            if (numPoints.size() >= minPoints) {
+                            if (numPoints.size() +1 >= minPoints) {
                                 break;
                             }
                         }

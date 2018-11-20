@@ -1,8 +1,22 @@
+import java.util.Timer;
+
 public class Main {
 
-    public static void main(String[] args) {
-        //DBScan start = new DBScan();
-        FADBScan startFA = new FADBScan();
+    private static long startTime;
+    private static long endTime;
 
+    public static void main(String[] args) {
+
+        startTime = System.nanoTime();
+        FADBScan startFA = new FADBScan();
+        endTime = System.nanoTime();
+
+        System.out.println(endTime -startTime);
+
+//        startTime = System.nanoTime();
+//        DBScan start = new DBScan();
+//        endTime = System.nanoTime();
+//
+//        System.out.println(endTime -startTime);
     }
 }
