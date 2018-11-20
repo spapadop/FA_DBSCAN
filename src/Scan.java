@@ -28,4 +28,25 @@ public abstract class Scan {
             System.exit(0);
         }
     }
+
+    protected void print() {
+        System.out.println("Total clusters: " + clusters.size());
+        for (Cluster cluster : clusters) {
+            System.out.println("Cluster_" + cluster.getId() +" size:"+ cluster.getPoints().size());
+        }
+
+//        for (Cluster cluster : clusters) {
+//            System.out.println("----- Cluster Number: " + cluster.getId() + "-----");
+//            for (Point p : cluster.getPoints()) {
+//                System.out.println("ID: " + p.getId() + " belongs_into: " + p.getCluster() + " as " + p.getLabel() + ": (" + p.getX() + "," + p.getY() + ")");
+//            }
+//        }
+//
+//        System.out.println("-----------------------------");
+//        System.out.println("-----------------------------");
+//
+//        for (Point p : points) {
+//            System.out.println(p.getId() + "\t" + p.getCluster() + "\t" + p.getLabel() + "\t" + p.getX() + "\t" + p.getY());
+//        }
+    }
 }

@@ -29,6 +29,17 @@ public class Point {
     }
 
     @Override
+    public String toString() {
+        return "Point{" +
+                "id=" + id +
+                ", x=" + x +
+                ", y=" + y +
+                ", cluster=" + cluster +
+                ", label=" + label +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

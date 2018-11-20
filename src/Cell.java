@@ -11,6 +11,12 @@ public class Cell {
         list = new ArrayList<>();
     }
 
+    public void outputListElements(){
+        for(Point p: list){
+            System.out.println(p);
+        }
+    }
+
     public List<Point> getList() {
         return list;
     }
@@ -45,6 +51,9 @@ public class Cell {
 
     public void setClusterNum(int clusterNum) {
         this.clusterNum = clusterNum;
+        for(Point p: list){
+            p.setCluster(clusterNum);
+        }
     }
 
     public Point  getNearestCorePoint (Point point) {

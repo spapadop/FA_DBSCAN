@@ -6,9 +6,14 @@ public class Grid {
 	private Cell [] [] grid;
 	private double cellWidth;
 	
-	public Grid (int i, int j, double eps ) {
+	public Grid (int rows, int cols, double eps ) {
 		 cellWidth = eps/Math.sqrt(2);
-		 grid = new Cell [i] [j];
+		 grid = new Cell [rows] [cols];
+		 for(int i=0; i<rows; i++){
+		 	for(int j=0; j<cols; j++){
+		 		grid[i][j] = new Cell();
+			}
+		 }
 	}
 
 	public double getCellWidth() {
