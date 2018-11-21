@@ -1,7 +1,5 @@
 import java.util.Objects;
 
-import com.sun.corba.se.impl.protocol.ServantCacheLocalCRDBase;
-
 public class Point {
 
     private int id;

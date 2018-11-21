@@ -1,19 +1,20 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Grid {
 
-	private Cell [] [] grid;
+	private HashMap<Integer, Cell> grid;
 	private double cellWidth;
+	public int nrows;
+	public int ncols;
 	
 	public Grid (int rows, int cols, double eps ) {
 		 cellWidth = eps/Math.sqrt(2);
-		 grid = new Cell [rows] [cols];
-		 for(int i=0; i<rows; i++){
-		 	for(int j=0; j<cols; j++){
-		 		grid[i][j] = new Cell();
-			}
-		 }
+		 nrows = rows;
+		 ncols = cols;
+		 grid = new HashMap<>();
+
 	}
 
 	public double getCellWidth() {
@@ -21,23 +22,38 @@ public class Grid {
 	}
 	
 	public Cell getCell (int x, int y) {
-		return grid [x] [y];
+		return grid.get(x*(ncols+1) + y);
 	}
-	
+
+	public boolean hasCell(int i, int j) {
+	    int key = i*(nrows+1) + j;
+	    return grid.containsKey(key);
+    }
+    public Cell getCellbyKey (int key) {
+        return grid.get(key);
+    }
+
 	public void setCell (int x, int y, Cell cell) {
-		grid [x] [y] = cell;
+        grid.put(x*(ncols+1) + y, cell);
 	}
 	
 	public void setPointInCell (int x, int y, Point newPoint) {
-		grid [x] [y].addPoint(newPoint);
+	    int key = x*(ncols+1) + y;
+	    if (!grid.containsKey(key)) {
+	        grid.put(key, new Cell());
+            grid.get(key).addPoint(newPoint);
+        } else {
+            grid.get(key).addPoint(newPoint);
+        }
+
 	}
 	
 	public int getLength() {
-		return grid.length;
+		return grid.size();
 	}
 	
 	public int getColLength(int i) {
-		return grid[i].length;
+		return ncols;
 	}
 
 
@@ -45,10 +61,10 @@ public class Grid {
 		List<Cell> nCells = new ArrayList<>();
 
 		for (int row = i - 2; row <= i + 2; row++) {
-			boolean rowInBounds = (row >= 0) && (row < grid.length);
+			boolean rowInBounds = (row >= 0) && (row < nrows);
 			if (rowInBounds) {
 				for (int col = j - 2; col <= j + 2; col++) {
-					boolean colInBounds = (col >= 0) && (col < grid[row].length);
+					boolean colInBounds = (col >= 0) && (col < ncols);
 					if (colInBounds) {
 						boolean isCorner, isCenter;
 						isCenter = row == i && col == j;
@@ -56,7 +72,9 @@ public class Grid {
 
 						//if (!(row==i && col==j) && (row != i - 2 && col != j - 2) && (row != i + 2 && col != j + 2) && (row != i + 2 && col != j - 2) && (row != i - 2 && col != j + 2)) { //taking out corners
 						if (!isCenter && !isCorner) {
-							nCells.add(grid[row][col]);
+						    if (this.hasCell(row, col)) {
+                                nCells.add(this.getCell(row, col));
+                            }
 						}
 					}
 				}
@@ -65,23 +83,4 @@ public class Grid {
 		return nCells;
 	}
 
-	public List<Cell> calculateOnlyNeighboringCells(int i, int j) {
-		List<Cell> nCells = new ArrayList<>();
-
-		for (int row = i - 2; row < i + 2; row++) {
-			boolean rowInBounds = (row >= 0) && (row < grid.length);
-			if (rowInBounds) {
-				for (int col = j - 2; col < j + 2; col++) {
-					boolean colInBounds = (col >= 0) && (col < grid[row].length);
-					if (colInBounds) {
-						if ((row != i && col != j) && (row != i - 2 && col != j - 2) && (row != i + 2 && col != j + 2) && (row != i - 2 && col != j - 2) && (row != i + 2 && col != j - 2) && (row != i - 2 && col != j + 2)) { //taking out corners
-							nCells.add(grid[i][j]);
-						}
-					}
-				}
-			}
-		}
-
-		return nCells;
-	}
 }

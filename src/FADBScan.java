@@ -33,13 +33,16 @@ public class FADBScan extends Scan{
 
         DetermineBorderPoint(); //Step 4
 
-        //printing();
+        printing();
 
     }
 
     private void printing() {
         for(int i=0; i<nRows; i++){
             for(int j=0; j<nCols; j++){
+                if (! grid.hasCell(i,j)) {
+                    continue;
+                }
                 if(grid.getCell(i,j).getClusterNum()!=-1){
                     System.out.println("CELL (" + i + "," + j + ") is-on-cluster: " + grid.getCell(i,j).getClusterNum() +  " " + grid.getCell(i,j).getList().size());
 //                    for (Point p : grid.getCell(i,j).getList()){
@@ -57,6 +60,9 @@ public class FADBScan extends Scan{
 
     	for (int i = 0; i < grid.getLength(); i++) {
     		for (int j = 0; j < grid.getColLength(i); j++) {
+    		    if (! grid.hasCell(i,j)) {
+    		        continue;
+                }
     			Cell currentCell = grid.getCell(i, j);    			
     			int numberOfPoint = currentCell.getNumberOfPoints();
     			if (numberOfPoint > 0) {
@@ -99,7 +105,11 @@ public class FADBScan extends Scan{
     private void mergingClusters() {
         for (int i = 0; i < grid.getLength(); i++) {
             for (int j = 0; j < grid.getColLength(i); j++) {
+                if (! grid.hasCell(i,j)){
+                    continue;
+                }
                 Cell currentCell = grid.getCell(i,j);
+
                 if (currentCell.getClusterNum() != -1){
                     List<Cell> neighborCells = grid.calculateNeighboringCells(i,j);
                     for(Cell c: neighborCells) { // for every neighbor cell of the current cell we are checking
@@ -128,6 +138,9 @@ public class FADBScan extends Scan{
     private void determineCorePoints() {
         for (int i = 0; i < grid.getLength(); i++) { // for all rows of grid
             for (int j = 0; j < grid.getColLength(0); j++) { // for all columns of grid
+                if (! grid.hasCell(i,j)) {
+                    continue;
+                }
                 int cellPoints =grid.getCell(i,j).getList().size();
                 if (cellPoints >= minPoints) { //set all points of cell as Core
                     for (Point p : grid.getCell(i,j).getList()) {
@@ -138,7 +151,13 @@ public class FADBScan extends Scan{
                     for (Point p : grid.getCell(i,j).getList()) { //of every point of the current cell
                         Set<Point> numPoints = new HashSet<>(); //calculates number of neighbours (points with distance less than eps) TODO: Maybe simple int counter.
                         List<Cell> nCells = grid.calculateNeighboringCells(i, j); //compute the cells within eps distance that can provide possible neighbor points
+                        if (nCells.isEmpty()) {
+                            continue;
+                        }
                         for (Cell nc : nCells) { //for every such neighbor cell (with potential neighbor points)
+                            if (nc.isEmpty()) {
+                                continue;
+                            }
                             for (Point q : nc.getList()) { //we examine all points of a neighbor
                                 if (p.getDistanceFrom(q) <= eps) {
                                     if (!numPoints.contains(q)) { //found new neighbor point

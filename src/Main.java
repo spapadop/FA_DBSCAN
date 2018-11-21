@@ -20,3 +20,8 @@ public class Main {
 //        System.out.println(endTime -startTime);
     }
 }
+// 27878739
+
+// 25671774
+
+//
