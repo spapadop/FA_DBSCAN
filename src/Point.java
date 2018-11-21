@@ -8,12 +8,14 @@ public class Point {
     private int cluster;
     private PointLabel label;
 
-    public Point(){
-        x = 0; y = 0;
+    public Point() {
+        x = 0;
+        y = 0;
         setLabelUndefined();
+        this.cluster = -1;
     }
 
-    public Point(int id, double x, double y){
+    public Point(int id, double x, double y) {
         this.id = id;
         this.x = x;
         this.y = y;
@@ -21,8 +23,8 @@ public class Point {
         this.cluster = -1;
     }
 
-    public double getDistanceFrom(Point otherPoint){
-        double dist = Math.sqrt(Math.pow(this.x - otherPoint.x,2) + Math.pow(this.y - otherPoint.y,2));
+    public double getDistanceFrom(Point otherPoint) {
+        double dist = Math.sqrt(Math.pow(this.x - otherPoint.x, 2) + Math.pow(this.y - otherPoint.y, 2));
         return dist;
     }
 
@@ -51,6 +53,10 @@ public class Point {
         return Objects.hash(x, y);
     }
 
+    public int getId() {
+        return id;
+    }
+
     public double getX() {
         return x;
     }
@@ -58,15 +64,6 @@ public class Point {
     public double getY() {
         return y;
     }
-
-//    public PointLabel getLabel() {
-//        return label;
-//    }
-
-    public int getId() {
-        return id;
-    }
-
 
     public int getCluster() {
         return cluster;
@@ -77,32 +74,32 @@ public class Point {
     }
 
     public void setLabelBorder() {
-    	label = PointLabel.BORDER;
+        label = PointLabel.BORDER;
     }
-    
+
     public void setLabelCore() {
-    	label = PointLabel.CORE;
+        label = PointLabel.CORE;
     }
-    
+
     public void setLabelNoise() {
-    	label = PointLabel.NOISE;
+        label = PointLabel.NOISE;
     }
-    
+
     public void setLabelUndefined() {
-    	label = PointLabel.UNDEFINED;
+        label = PointLabel.UNDEFINED;
     }
-    
+
     public boolean isCore() {
-    	return label.equals(PointLabel.CORE);
+        return label.equals(PointLabel.CORE);
     }
 
-	public boolean isUndefined() {
-		return label.equals(PointLabel.UNDEFINED);
-	}
+    public boolean isUndefined() {
+        return label.equals(PointLabel.UNDEFINED);
+    }
 
-	public boolean isNoise() {
-		return label.equals(PointLabel.NOISE);
-	}
+    public boolean isNoise() {
+        return label.equals(PointLabel.NOISE);
+    }
 
     public PointLabel getLabel() {
         return label;

@@ -6,17 +6,26 @@ public class Cell {
     private int clusterNum;
     private boolean isCore;
 
-
-    public Cell(){
-        clusterNum =-1;
+    public Cell() {
+        clusterNum = -1;
         list = new ArrayList<>();
         isCore = false;
     }
 
-    public void outputListElements(){
-        for(Point p: list){
+    public void outputListElements() {
+        for (Point p : list) {
             System.out.println(p);
         }
+    }
+
+    public Point getNearestCorePoint(Point point) {
+        Point nearestCorePoint = null;
+
+        for (Point p : list)
+            if (nearestCorePoint == null || point.getDistanceFrom(p) < point.getDistanceFrom(nearestCorePoint))
+                nearestCorePoint = p;
+
+        return nearestCorePoint;
     }
 
     public List<Point> getList() {
@@ -26,25 +35,25 @@ public class Cell {
     public void setList(List<Point> list) {
         this.list = list;
     }
-    
-    public boolean isEmpty () {
-    	return list.isEmpty();
+
+    public boolean isEmpty() {
+        return list.isEmpty();
     }
-    
+
     public int getNumberOfPoints() {
-    	return list.size();
+        return list.size();
     }
-    
-    public Point getPoint (int position) {
-    	return list.get(position);
+
+    public Point getPoint(int position) {
+        return list.get(position);
     }
-    
-    public void addPoint (Point newPoint) {
-    	list.add(newPoint);
+
+    public void addPoint(Point newPoint) {
+        list.add(newPoint);
     }
-    
-    public void setPoint (int position, Point newPoint) {
-    	list.set(position, newPoint);
+
+    public void setPoint(int position, Point newPoint) {
+        list.set(position, newPoint);
     }
 
     public int getClusterNum() {
@@ -62,18 +71,9 @@ public class Cell {
     public void setClusterNum(int clusterNum) {
         isCore = true;
         this.clusterNum = clusterNum;
-        for(Point p: list){
+        for (Point p : list) {
             p.setCluster(clusterNum);
         }
     }
 
-    public Point  getNearestCorePoint (Point point) {
-    	Point nearestCorePoint = null;
-    	
-    	for (Point p: list)
-    		if (nearestCorePoint == null || point.getDistanceFrom(p) < point.getDistanceFrom(nearestCorePoint)) 
-    			nearestCorePoint = p;
-    		
-    	return nearestCorePoint;
-    }
 }

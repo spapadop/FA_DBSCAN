@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class FADBScan extends Scan{
+public class FADBScan extends Scan {
 
     private double cellWidth;
     private double minX;
@@ -12,20 +12,29 @@ public class FADBScan extends Scan{
     private Grid grid;
 
 
-    public FADBScan(){
-        eps = 0.5;
+    public FADBScan() {
+        eps = 10;
         minPoints = 5;
         clusterCounter = 0;
         points = new ArrayList<>();
         clusters = new ArrayList<>();
         readData("input-5000.txt");
         scan();
+    }
 
+    public FADBScan(double eps, int minPoints) {
+        this.eps = eps;
+        this.minPoints = minPoints;
+        clusterCounter = 0;
+        points = new ArrayList<>();
+        clusters = new ArrayList<>();
+        readData("input-5000.txt");
+        scan();
     }
 
 //    70478153127 dbscan with 5000
-    
-    public void scan () {
+
+    public void scan() {
         constructGrid(); //Step 1:  partition the data using a grid -hashmap
         //constructBoxes(); //Step 1:  partition the data using boxes -sorting
 
@@ -40,13 +49,13 @@ public class FADBScan extends Scan{
     }
 
     private void printing() {
-        for(int i=0; i<nRows; i++){
-            for(int j=0; j<nCols; j++){
-                if (! grid.hasCell(i,j)) {
+        for (int i = 0; i < nRows; i++) {
+            for (int j = 0; j < nCols; j++) {
+                if (!grid.hasCell(i, j)) {
                     continue;
                 }
-                if(grid.getCell(i,j).getClusterNum()!=-1){
-                    System.out.println("CELL (" + i + "," + j + ") is-on-cluster: " + grid.getCell(i,j).getClusterNum() +  " " + grid.getCell(i,j).getList().size());
+                if (grid.getCell(i, j).getClusterNum() != -1) {
+                    System.out.println("CELL (" + i + "," + j + ") is-on-cluster: " + grid.getCell(i, j).getClusterNum() + " " + grid.getCell(i, j).getList().size());
 //                    for (Point p : grid.getCell(i,j).getList()){
 //                        System.out.print(p.getLabel() + " ");
 //                    }
@@ -60,44 +69,43 @@ public class FADBScan extends Scan{
 
     private void DetermineBorderPoint() {
 
-    	for (int i = 0; i < grid.getLength(); i++) {
-    		for (int j = 0; j < grid.getColLength(i); j++) {
-    		    if (! grid.hasCell(i,j)) {
-    		        continue;
+        for (int i = 0; i < grid.getLength(); i++) {
+            for (int j = 0; j < grid.getColLength(i); j++) {
+                if (!grid.hasCell(i, j)) {
+                    continue;
                 }
-    			Cell currentCell = grid.getCell(i, j);    			
-    			int numberOfPoint = currentCell.getNumberOfPoints();
-    			if (numberOfPoint > 0) {
-    				for (int k = 0; k < numberOfPoint;k++){
-    					Point currentPoint = currentCell.getPoint(k);
+                Cell currentCell = grid.getCell(i, j);
+                int numberOfPoint = currentCell.getNumberOfPoints();
+                if (numberOfPoint > 0) {
+                    for (int k = 0; k < numberOfPoint; k++) {
+                        Point currentPoint = currentCell.getPoint(k);
 
-    					if (!currentPoint.isCore()) {
-    						Point q  = null;
-    						List<Cell> neighborCellsList = grid.calculateNeighboringCells(i,j);
-    						for (Cell neighborCell : neighborCellsList) {
-    						    if (!neighborCell.isEmpty()) {
+                        if (!currentPoint.isCore()) {
+                            Point q = null;
+                            List<Cell> neighborCellsList = grid.calculateNeighboringCells(i, j);
+                            for (Cell neighborCell : neighborCellsList) {
+                                if (!neighborCell.isEmpty()) {
                                     Point tempPoint = neighborCell.getNearestCorePoint(currentPoint);
-
                                     if (q == null) {
                                         q = tempPoint;
                                     } else if (currentPoint.getDistanceFrom(tempPoint) <= currentPoint.getDistanceFrom(q)) {
                                         q = tempPoint;
                                     }
                                 }
-    						}
+                            }
 
-    						if (q != null) {
-    							currentPoint.setCluster(q.getCluster());
+                            if (q != null) {
+                                currentPoint.setCluster(q.getCluster());
                                 currentPoint.setLabelBorder();
 
-                            }else {
-    							currentPoint.setLabelNoise();
-    						}
-    					}
-    				}
-    			}
-    		}
-    	}
+                            } else {
+                                currentPoint.setLabelNoise();
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 
@@ -107,14 +115,14 @@ public class FADBScan extends Scan{
     private void mergingClusters() {
         for (int i = 0; i < grid.getLength(); i++) {
             for (int j = 0; j < grid.getColLength(i); j++) {
-                if (! grid.hasCell(i,j)){
+                if (!grid.hasCell(i, j)) {
                     continue;
                 }
-                Cell currentCell = grid.getCell(i,j);
+                Cell currentCell = grid.getCell(i, j);
 
-                if (currentCell.getClusterNum() != -1){
-                    List<Cell> neighborCells = grid.calculateNeighboringCells(i,j);
-                    for(Cell c: neighborCells) { // for every neighbor cell of the current cell we are checking
+                if (currentCell.getClusterNum() != -1) {
+                    List<Cell> neighborCells = grid.calculateNeighboringCells(i, j);
+                    for (Cell c : neighborCells) { // for every neighbor cell of the current cell we are checking
                         findNeighborCluster(currentCell, c);
                     }
                 }
@@ -123,10 +131,10 @@ public class FADBScan extends Scan{
         }
     }
 
-    private void findNeighborCluster(Cell currentCell, Cell neighborCell){
-        for(Point p: currentCell.getList()){ //for every point of the current cell we are checking...
-            for(Point pn: neighborCell.getList()){ //for every point in a neighbor cell
-                if(p.getDistanceFrom(pn)<=eps){
+    private void findNeighborCluster(Cell currentCell, Cell neighborCell) {
+        for (Point p : currentCell.getList()) { //for every point of the current cell we are checking...
+            for (Point pn : neighborCell.getList()) { //for every point in a neighbor cell
+                if (p.getDistanceFrom(pn) <= eps) {
                     neighborCell.setClusterNum(currentCell.getClusterNum());
                     return;
                 }
@@ -140,20 +148,20 @@ public class FADBScan extends Scan{
     private void determineCorePoints() {
         for (int i = 0; i < grid.nrows; i++) { // for all rows of grid
             for (int j = 0; j < grid.ncols; j++) { // for all columns of grid
-                if (! grid.hasCell(i,j)) {
+                if (!grid.hasCell(i, j)) {
                     continue;
                 }
-                if (grid.getCell(i,j).isEmpty()) {
+                if (grid.getCell(i, j).isEmpty()) {
                     continue;
                 }
-                int cellPoints =grid.getCell(i,j).getList().size();
+                int cellPoints = grid.getCell(i, j).getList().size();
                 if (cellPoints >= minPoints) { //set all points of cell as Core
-                    for (Point p : grid.getCell(i,j).getList()) {
+                    for (Point p : grid.getCell(i, j).getList()) {
                         p.setLabelCore();
                     }
-                    grid.getCell(i,j).setClusterNum(clusterCounter);
+                    grid.getCell(i, j).setClusterNum(clusterCounter);
                 } else if (cellPoints != 0) {
-                    for (Point p : grid.getCell(i,j).getList()) { //of every point of the current cell
+                    for (Point p : grid.getCell(i, j).getList()) { //of every point of the current cell
                         Set<Point> numPoints = new HashSet<>(); //calculates number of neighbours (points with distance less than eps) TODO: Maybe simple int counter.
                         List<Cell> nCells = grid.calculateNeighboringCells(i, j); //compute the cells within eps distance that can provide possible neighbor points
                         if (nCells.isEmpty()) {
@@ -168,14 +176,14 @@ public class FADBScan extends Scan{
                                     if (!numPoints.contains(q)) { //found new neighbor point
                                         numPoints.add(q);
                                     }
-                                    if (numPoints.size() +1 >= minPoints) { // TODO: not sure. shall we count the same point as neighbor of itself?
+                                    if (numPoints.size() + 1 >= minPoints) { // TODO: not sure. shall we count the same point as neighbor of itself?
                                         p.setLabelCore();
-                                        grid.getCell(i,j).setClusterNum(clusterCounter);
+                                        grid.getCell(i, j).setClusterNum(clusterCounter);
                                         break;
                                     }
                                 }
                             }
-                            if (numPoints.size() +1 >= minPoints) {
+                            if (numPoints.size() + 1 >= minPoints) {
                                 break;
                             }
                         }
@@ -188,7 +196,7 @@ public class FADBScan extends Scan{
 
     private void constructBoxes() {
 
-        cellWidth = eps/Math.sqrt(2);
+        cellWidth = eps / Math.sqrt(2);
 
         /* Algorithm 4
         3: cellWidth "=p2
@@ -207,7 +215,7 @@ public class FADBScan extends Scan{
          */
     }
 
-    private void addStripToGrid(){
+    private void addStripToGrid() {
 
         /* Algorithm 5
             4: Sort strip in y-coordinate
@@ -228,11 +236,11 @@ public class FADBScan extends Scan{
      * It initializes appropriate thresholds (cellWidth, nRows,nCols) and calling calculateMinMaxDimensions()
      * and classifies all data points into the proper cell in the grid
      */
-    private void constructGrid(){
-        cellWidth = eps/Math.sqrt(2);
+    private void constructGrid() {
+        cellWidth = eps / Math.sqrt(2);
         calculateMinMaxDimensions();
-        nRows = (int) ((maxX-minX)/cellWidth + 1);
-        nCols = (int) ((maxY-minY)/cellWidth + 1);
+        nRows = (int) ((maxX - minX) / cellWidth + 1);
+        nCols = (int) ((maxY - minY) / cellWidth + 1);
 
         /*
             In the case of a point on the border of a cell,
@@ -244,11 +252,12 @@ public class FADBScan extends Scan{
             in Algorithm 3.
         */
 
-        grid = new Grid (nRows,nCols,eps);
-        for(Point p: points){
-            int tempx; int tempy;
-            tempx = (int) ((p.getX()-minX)/cellWidth ); //+1
-            tempy = (int) ((p.getY()-minY)/cellWidth ); //+1
+        grid = new Grid(nRows, nCols, eps);
+        for (Point p : points) {
+            int tempx;
+            int tempy;
+            tempx = (int) ((p.getX() - minX) / cellWidth); //+1
+            tempy = (int) ((p.getY() - minY) / cellWidth); //+1
             //TODO: Need to cater for exceptions (e.g. points in the borders of 2 cells)
             grid.setPointInCell(tempx, tempy, p);
         }
@@ -277,11 +286,19 @@ public class FADBScan extends Scan{
         maxX = Double.MIN_VALUE;
         maxY = Double.MIN_VALUE;
 
-        for(Point p: points){
-            if(p.getX() > maxX){ maxX = p.getX(); }
-            if(p.getX() < minX){ minX = p.getX(); }
-            if(p.getY() > maxY){ maxY = p.getY(); }
-            if(p.getY() < minY){ minY = p.getY(); }
+        for (Point p : points) {
+            if (p.getX() > maxX) {
+                maxX = p.getX();
+            }
+            if (p.getX() < minX) {
+                minX = p.getX();
+            }
+            if (p.getY() > maxY) {
+                maxY = p.getY();
+            }
+            if (p.getY() < minY) {
+                minY = p.getY();
+            }
         }
     }
 
