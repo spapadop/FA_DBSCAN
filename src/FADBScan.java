@@ -13,15 +13,17 @@ public class FADBScan extends Scan{
 
 
     public FADBScan(){
-        eps = 10;
+        eps = 0.5;
         minPoints = 5;
         clusterCounter = 0;
         points = new ArrayList<>();
         clusters = new ArrayList<>();
-        readData("input.txt");
+        readData("input-5000.txt");
         scan();
 
     }
+
+//    70478153127 dbscan with 5000
     
     public void scan () {
         constructGrid(); //Step 1:  partition the data using a grid -hashmap
@@ -136,9 +138,12 @@ public class FADBScan extends Scan{
      * Determines the core points.
      */
     private void determineCorePoints() {
-        for (int i = 0; i < grid.getLength(); i++) { // for all rows of grid
-            for (int j = 0; j < grid.getColLength(0); j++) { // for all columns of grid
+        for (int i = 0; i < grid.nrows; i++) { // for all rows of grid
+            for (int j = 0; j < grid.ncols; j++) { // for all columns of grid
                 if (! grid.hasCell(i,j)) {
+                    continue;
+                }
+                if (grid.getCell(i,j).isEmpty()) {
                     continue;
                 }
                 int cellPoints =grid.getCell(i,j).getList().size();

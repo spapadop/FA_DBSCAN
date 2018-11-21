@@ -26,7 +26,7 @@ public class Grid {
 	}
 
 	public boolean hasCell(int i, int j) {
-	    int key = i*(nrows+1) + j;
+	    int key = i*(ncols+1) + j;
 	    return grid.containsKey(key);
     }
     public Cell getCellbyKey (int key) {

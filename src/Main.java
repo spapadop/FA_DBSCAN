@@ -7,17 +7,17 @@ public class Main {
 
     public static void main(String[] args) {
 
-        startTime = System.nanoTime();
-        FADBScan startFA = new FADBScan();
-        endTime = System.nanoTime();
-
-        System.out.println(endTime -startTime);
-
 //        startTime = System.nanoTime();
-//        DBScan start = new DBScan();
+//        FADBScan startFA = new FADBScan();
 //        endTime = System.nanoTime();
 //
 //        System.out.println(endTime -startTime);
+
+        startTime = System.nanoTime();
+        DBScan start = new DBScan();
+        endTime = System.nanoTime();
+
+        System.out.println(endTime -startTime);
     }
 }
 // 27878739

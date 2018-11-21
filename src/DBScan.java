@@ -6,12 +6,12 @@ public class DBScan extends Scan {
 
 
     public DBScan() {
-        eps = 10;
+        eps = 0.5;
         minPoints = 5;
         clusterCounter = 0;
         points = new ArrayList<>();
         clusters = new ArrayList<>();
-        readData("input.txt");
+        readData("input-5000.txt");
         
         scan();
     }
@@ -31,7 +31,7 @@ public class DBScan extends Scan {
                 }
             }
         }
-        //print();
+        print();
 	}
 
     protected Cluster expandCluster(Point p, HashSet<Point> neighbours, Cluster cluster) {
