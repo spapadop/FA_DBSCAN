@@ -46,8 +46,37 @@ public class FADBScan extends Scan {
 
         DetermineBorderPoint(); //Step 4
 
-        printing();
+        printPoints();
+        //printing();
 
+
+    }
+
+    private void printPoints(){
+        Map<Integer,Cluster> map = new HashMap<>();
+        for(Point p: points){
+            if(map.containsKey(p.getCluster())){
+                map.get(p.getCluster()).addPoint(p);
+            } else{
+                Cluster c = new Cluster(p.getCluster());
+                c.addPoint(p);
+                map.put(p.getCluster(),c);
+            }
+        }
+
+        System.out.println("Running FADBSCAN...");
+        System.out.println("Total Clusters: " + map.size());
+        for(Cluster c: map.values()){
+            System.out.println("Cluster_" + c.getId() + ": " + c.getPoints().size() + " points");
+        }
+
+        for(Cluster c: map.values()){
+            if(c.getId()==577){
+                for(Point p: c.getPoints()){
+                    System.out.println(p);
+                }
+            }
+        }
     }
 
     private void printing() {
@@ -58,6 +87,12 @@ public class FADBScan extends Scan {
                 if (!grid.hasCell(i, j)) {
                     continue;
                 }
+
+                //System.out.println(grid.getCell(i,j).getClusterNum() + "\t" + grid.getCell(i,j).getList());
+
+
+
+
                 if(grid.getCell(i, j).getClusterNum() !=-1){
                     if(clustersMap.containsKey(grid.getCell(i, j).getClusterNum())) {
                         for (Point p : grid.getCell(i, j).getList()) {
@@ -81,6 +116,9 @@ public class FADBScan extends Scan {
 
         int cntNoise=0;
         for(Point p: points){
+            if (p.getCluster()==4){
+                System.out.println(p);
+            }
             if(p.isNoise()){
                 cntNoise++;
             }
