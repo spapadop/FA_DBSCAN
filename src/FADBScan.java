@@ -79,10 +79,14 @@ public class FADBScan extends Scan {
             System.out.println("Cluster_" + c.getId() + ": " + c.getPoints().size() + " points");
         }
 
+        int cntNoise=0;
         for(Point p: points){
-            if(p.isUndefined())
-                System.out.println(p.getId() + " " + p.getLabel());
+            if(p.isNoise()){
+                cntNoise++;
+            }
         }
+        System.out.println("Noise points: " + cntNoise);
+
 
     }
 
@@ -92,32 +96,27 @@ public class FADBScan extends Scan {
                 if (!grid.hasCell(i, j)) {
                     continue;
                 }
-                Cell currentCell = grid.getCell(i, j);
-                int numberOfPoint = currentCell.getNumberOfPoints();
-                if (numberOfPoint > 0) {
-                    for (int k = 0; k < numberOfPoint; k++) {
-                        Point currentPoint = currentCell.getPoint(k);
-
-                        if (!currentPoint.isCore()) {
-                            Point q = null;
-                            List<Cell> neighborCellsList = grid.calculateNeighboringCells(i, j);
-                            for (Cell neighborCell : neighborCellsList) {
-                                if (!neighborCell.isEmpty()) {
-                                    Point tempPoint = neighborCell.getNearestCorePoint(currentPoint);
-                                    if (q == null ) {
-                                        q = tempPoint;
-                                    } else if (currentPoint.getDistanceFrom(tempPoint) <= currentPoint.getDistanceFrom(q)) {
-                                        q = tempPoint;
-                                    }
+                for (Point currentPoint : grid.getCell(i, j).getList()) { //for every point in current cell
+                    if (!currentPoint.isCore()) {
+                        Point q = null;
+                        for (Cell neighborCell : grid.calculateNeighboringCells(i, j)) { //for every neighbor cell
+                            if (!neighborCell.isEmpty()) {
+                                Point nearCorePoint = neighborCell.getNearestCorePoint(currentPoint);
+                                if(nearCorePoint == null){
+                                    continue;
+                                }
+                                if (q == null ) {
+                                    q = nearCorePoint;
+                                } else if (currentPoint.getDistanceFrom(nearCorePoint) <= currentPoint.getDistanceFrom(q)) {
+                                    q = nearCorePoint;
                                 }
                             }
-                            if (q != null) {
-                                currentPoint.setCluster(q.getCluster());
-                                currentPoint.setLabelBorder();
-
-                            } else {
-                                currentPoint.setLabelNoise();
-                            }
+                        }
+                        if (q != null) {
+                            currentPoint.setCluster(q.getCluster());
+                            currentPoint.setLabelBorder();
+                        } else {
+                            currentPoint.setLabelNoise();
                         }
                     }
                 }
@@ -258,17 +257,6 @@ public class FADBScan extends Scan {
         calculateMinMaxDimensions();
         nRows = (int) ((maxX - minX) / cellWidth + 1);
         nCols = (int) ((maxY - minY) / cellWidth + 1);
-
-        /*
-            In the case of a point on the border of a cell,
-            we assign it in the top-right cell as shown in Figure 3.1, where x will be assigned to cell A
-            and y will be assigned to cell B. If at least one point is exactly on the top-most border or
-            right-most border of the grid, we will add an extra row / column to prevent it to be assigned
-            to the outside of the grid. For example, in Figure 3.1, an extra row is added because of point
-            p and an extra column is added because of point q. An algorithm to construct this is shown
-            in Algorithm 3.
-        */
-
         grid = new Grid(nRows, nCols, eps);
         for (Point p : points) {
             int tempx;
@@ -278,20 +266,6 @@ public class FADBScan extends Scan {
             //TODO: Need to cater for exceptions (e.g. points in the borders of 2 cells)
             grid.setPointInCell(tempx, tempy, p);
         }
-
-        /* Algorithm 3
-        3: cellWidth "=p2
-        4: Initialize minX, maxX, minY , and maxY from P
-        5: nRows bmaxX − minX
-        cellWidth + 1c
-        6: nCols bmaxY − minY
-        cellWidth + 1c
-        7: Initialize G as an empty grid with size nCells = nRows × nCols
-        8: for each point p 2 P do
-        9: Add point p to G bp:x cellWidth − minX + 1c bp:y cellWidth − minY + 1c
-        10: return G
-         */
-
     }
 
     /**

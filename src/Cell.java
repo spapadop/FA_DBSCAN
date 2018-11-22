@@ -22,10 +22,13 @@ public class Cell {
     public Point getNearestCorePoint(Point point) {
         Point nearestCorePoint = null;
 
-        for (Point p : list)
-            if (nearestCorePoint == null || point.getDistanceFrom(p) < point.getDistanceFrom(nearestCorePoint))
-                nearestCorePoint = p;
-
+        for (Point p : list) {
+            if(p.isCore()) {
+                if ((nearestCorePoint == null) || (point.getDistanceFrom(p) < point.getDistanceFrom(nearestCorePoint))) {
+                    nearestCorePoint = p;
+                }
+            }
+        }
         return nearestCorePoint;
     }
 

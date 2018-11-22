@@ -66,7 +66,7 @@ public class Grid {
                     boolean colInBounds = (col >= 0) && (col < ncols);
                     if (colInBounds) {
                         boolean isCorner, isCenter;
-                        isCenter = row == i && col == j;
+                        //isCenter = row == i && col == j;
                         isCorner = (row == i - 2 && col == j - 2) || (row == i + 2 && col == j + 2) || (row == i + 2 && col == j - 2) || (row == i - 2 && col == j + 2);
                         if (!isCorner) {
                             if (this.hasCell(row, col)) {
