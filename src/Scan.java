@@ -35,5 +35,16 @@ public abstract class Scan {
         for (Cluster cluster : clusters) {
             System.out.println("Cluster_" + cluster.getId() + ": " + cluster.getPoints().size() + " points");
         }
+
+        int cntNoise=0;
+        for(Point p: points){
+            if (p.getCluster()==4){
+                System.out.println(p);
+            }
+            if(p.isNoise()){
+                cntNoise++;
+            }
+        }
+        System.out.println("Noise points: " + cntNoise);
     }
 }
