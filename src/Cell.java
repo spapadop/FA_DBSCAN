@@ -73,7 +73,7 @@ public class Cell {
     }
 
     public void setClusterNum(int clusterNum) {
-        isCore = true;
+        //isCore = true;
         this.clusterNum = clusterNum;
         for (Point p : list) {
             p.setCluster(clusterNum);

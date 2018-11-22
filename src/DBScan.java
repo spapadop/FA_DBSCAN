@@ -15,13 +15,13 @@ public class DBScan extends Scan {
     }
 
 
-    public DBScan(double eps, int minPoints) {
+    public DBScan(double eps, int minPoints, String filename) {
         this.eps = eps;
         this.minPoints = minPoints;
         clusterCounter = 0;
         points = new ArrayList<>();
         clusters = new ArrayList<>();
-        readData("input-5000.txt");
+        readData(filename);
         scan();
     }
 

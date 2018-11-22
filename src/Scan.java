@@ -15,7 +15,7 @@ public abstract class Scan {
 
     protected void readData(String path) {
         String line = "";
-        int id = 0;
+        int id = 1;
         try (BufferedReader br = new BufferedReader(new FileReader(path))) {
             String[] attr = null;
             line = br.readLine(); //remove header
