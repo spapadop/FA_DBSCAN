@@ -45,16 +45,8 @@ public class FADBScan extends Scan {
         mergingClusters(); //Step 3
 
         DetermineBorderPoint(); //Step 4
-
         printPoints();
         //printing();
-        for(Point p: points){
-            if (p.getId() == 20){
-                System.out.println(p);
-            }
-        }
-
-
     }
 
     private void printPoints(){
@@ -74,14 +66,6 @@ public class FADBScan extends Scan {
         for(Cluster c: map.values()){
             System.out.println("Cluster_" + c.getId() + ": " + c.getPoints().size() + " points");
         }
-
-//        for(Cluster c: map.values()){
-//            if(c.getId()==577){
-//                for(Point p: c.getPoints()){
-//                    System.out.println(p);
-//                }
-//            }
-//        }
     }
 
     private void printing() {
@@ -144,11 +128,15 @@ public class FADBScan extends Scan {
                         Point q = null;
                         for (Cell neighborCell : grid.calculateNeighboringCells(i, j)) { //for every neighbor cell
                             if (!neighborCell.isEmpty()) {
-                                Point nearCorePoint = neighborCell.getNearestCorePoint(currentPoint);
+                                Point nearCorePoint =null;
+                                Point temp = (neighborCell.getNearestCorePoint(currentPoint));
+                                if(temp!=null && temp.getDistanceFrom(currentPoint)<=eps){
+                                    nearCorePoint = temp;
+                                }
                                 if(nearCorePoint == null){
                                     continue;
                                 }
-                                if (q == null ) {
+                                if (q == null) {
                                     q = nearCorePoint;
                                 } else if (currentPoint.getDistanceFrom(nearCorePoint) <= currentPoint.getDistanceFrom(q)) {
                                     q = nearCorePoint;
@@ -211,7 +199,7 @@ public class FADBScan extends Scan {
                         return;
                     } else if (cNum != cNum2){
                         neighborCell.setClusterNum(cNum);
-                        System.out.println(cNum +"=" + cNum2);
+                        //System.out.println(cNum +"=" + cNum2);
                         for (Point p2: points){
                             if (p2.getCluster()==cNum2){
                                 p2.setCluster(cNum);

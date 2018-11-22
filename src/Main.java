@@ -5,9 +5,9 @@ public class Main {
     private static long endTime;
 
     private static final int RUN = 2; //1=DBSCAN, 2=FADBSCAN
-    private static final double EPS = 10; //set the value of eps
+    private static final double EPS = 0.5; //set the value of eps
     private static final int MINPOINTS = 5; //set the value of MinPoints
-    private static final String FILENAME = "input.txt";
+    private static final String FILENAME = "input-5000.txt";
 
 
     public static void main(String[] args) {
