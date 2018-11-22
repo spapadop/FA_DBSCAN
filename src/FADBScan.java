@@ -78,6 +78,12 @@ public class FADBScan extends Scan {
         for(Cluster c: clustersMap.values()){
             System.out.println("Cluster_" + c.getId() + ": " + c.getPoints().size() + " points");
         }
+
+        for(Point p: points){
+            if(p.isUndefined())
+                System.out.println(p.getId() + " " + p.getLabel());
+        }
+
     }
 
     private void DetermineBorderPoint() {
@@ -98,14 +104,13 @@ public class FADBScan extends Scan {
                             for (Cell neighborCell : neighborCellsList) {
                                 if (!neighborCell.isEmpty()) {
                                     Point tempPoint = neighborCell.getNearestCorePoint(currentPoint);
-                                    if (q == null) {
+                                    if (q == null ) {
                                         q = tempPoint;
                                     } else if (currentPoint.getDistanceFrom(tempPoint) <= currentPoint.getDistanceFrom(q)) {
                                         q = tempPoint;
                                     }
                                 }
                             }
-
                             if (q != null) {
                                 currentPoint.setCluster(q.getCluster());
                                 currentPoint.setLabelBorder();
@@ -135,7 +140,7 @@ public class FADBScan extends Scan {
                 if (currentCell.getClusterNum() != -1) {
                     List<Cell> neighborCells = grid.calculateNeighboringCells(i, j);
                     for (Cell c : neighborCells) { // for every neighbor cell of the current cell we are checking
-                        findNeighborCluster(currentCell, c);
+                            findNeighborCluster(currentCell, c);
                     }
                 }
 
@@ -188,14 +193,14 @@ public class FADBScan extends Scan {
                                     if (!numPoints.contains(q)) { //found new neighbor point
                                         numPoints.add(q);
                                     }
-                                    if (numPoints.size() + 1 >= minPoints) { // TODO: not sure. shall we count the same point as neighbor of itself?
+                                    if (numPoints.size() >= minPoints) {
                                         p.setLabelCore();
                                         grid.getCell(i, j).setClusterNum(clusterCounter);
                                         break;
                                     }
                                 }
                             }
-                            if (numPoints.size() + 1 >= minPoints) {
+                            if (numPoints.size() >= minPoints) {
                                 break;
                             }
                         }

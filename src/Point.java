@@ -102,6 +102,10 @@ public class Point {
         return label.equals(PointLabel.NOISE);
     }
 
+    public boolean isBorder() {
+        return label.equals(PointLabel.BORDER);
+    }
+
     public PointLabel getLabel() {
         return label;
     }

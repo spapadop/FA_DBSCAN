@@ -10,7 +10,7 @@ public class DBScan extends Scan {
         clusterCounter = 0;
         points = new ArrayList<>();
         clusters = new ArrayList<>();
-        readData("input-5000.txt");
+        readData("input.txt");
         scan();
     }
 

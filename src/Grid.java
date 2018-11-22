@@ -68,7 +68,7 @@ public class Grid {
                         boolean isCorner, isCenter;
                         isCenter = row == i && col == j;
                         isCorner = (row == i - 2 && col == j - 2) || (row == i + 2 && col == j + 2) || (row == i + 2 && col == j - 2) || (row == i - 2 && col == j + 2);
-                        if (!isCenter && !isCorner) {
+                        if (!isCorner) {
                             if (this.hasCell(row, col)) {
                                 nCells.add(this.getCell(row, col));
                             }
