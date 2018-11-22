@@ -19,7 +19,7 @@ public class Main {
                 break;
         }
         endTime = System.nanoTime();
-        System.out.println(endTime - startTime);
+        System.out.println("Time: " + (endTime - startTime));
 
     }
 

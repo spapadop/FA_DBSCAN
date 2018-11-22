@@ -8,6 +8,7 @@ public class Point {
     private int cluster;
     private PointLabel label;
 
+
     public Point() {
         x = 0;
         y = 0;

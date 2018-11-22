@@ -9,6 +9,7 @@ public class Grid {
     public int nrows;
     public int ncols;
 
+
     public Grid(int rows, int cols, double eps) {
         cellWidth = eps / Math.sqrt(2);
         nrows = rows;

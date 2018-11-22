@@ -6,6 +6,7 @@ public class Cell {
     private int clusterNum;
     private boolean isCore;
 
+
     public Cell() {
         clusterNum = -1;
         list = new ArrayList<>();

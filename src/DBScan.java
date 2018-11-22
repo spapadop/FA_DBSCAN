@@ -14,6 +14,7 @@ public class DBScan extends Scan {
         scan();
     }
 
+
     public DBScan(double eps, int minPoints) {
         this.eps = eps;
         this.minPoints = minPoints;

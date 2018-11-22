@@ -35,6 +35,8 @@ public class FADBScan extends Scan {
 //    70478153127 dbscan with 5000
 
     public void scan() {
+
+
         constructGrid(); //Step 1:  partition the data using a grid -hashmap
         //constructBoxes(); //Step 1:  partition the data using boxes -sorting
 
@@ -49,26 +51,36 @@ public class FADBScan extends Scan {
     }
 
     private void printing() {
+        clusters = new ArrayList<>();
+        Map<Integer,Cluster> clustersMap = new HashMap<>();
         for (int i = 0; i < nRows; i++) {
             for (int j = 0; j < nCols; j++) {
                 if (!grid.hasCell(i, j)) {
                     continue;
                 }
-                if (grid.getCell(i, j).getClusterNum() != -1) {
-                    System.out.println("CELL (" + i + "," + j + ") is-on-cluster: " + grid.getCell(i, j).getClusterNum() + " " + grid.getCell(i, j).getList().size());
-//                    for (Point p : grid.getCell(i,j).getList()){
-//                        System.out.print(p.getLabel() + " ");
-//                    }
-//                    System.out.println();
+                if(grid.getCell(i, j).getClusterNum() !=-1){
+                    if(clustersMap.containsKey(grid.getCell(i, j).getClusterNum())) {
+                        for (Point p : grid.getCell(i, j).getList()) {
+                            clustersMap.get(grid.getCell(i, j).getClusterNum()).addPoint(p);
+                        }
+                    } else {
+                        Cluster cluster = new Cluster(grid.getCell(i, j).getClusterNum());
+                        for (Point p : grid.getCell(i, j).getList()) {
+                            cluster.addPoint(p);
+                        }
+                        clustersMap.put(cluster.getId(),cluster);
+                    }
                 }
-//                System.out.println("CELL " + i + " " + j + " is on cluster: " + grid.getCell(i,j).getClusterNum());
-//                System.out.println(grid.getCell(i,j).getList());
             }
+        }
+        System.out.println("Running FADBSCAN...");
+        System.out.println("Total Clusters: " + clustersMap.size());
+        for(Cluster c: clustersMap.values()){
+            System.out.println("Cluster_" + c.getId() + ": " + c.getPoints().size() + " points");
         }
     }
 
     private void DetermineBorderPoint() {
-
         for (int i = 0; i < grid.getLength(); i++) {
             for (int j = 0; j < grid.getColLength(i); j++) {
                 if (!grid.hasCell(i, j)) {

@@ -6,6 +6,7 @@ public class Cluster {
     private int id;
     private HashSet<Point> points;
 
+
     public Cluster(int putId) {
         this.id = putId;
         points = new HashSet<>();

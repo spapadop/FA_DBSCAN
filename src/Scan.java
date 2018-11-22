@@ -30,9 +30,10 @@ public abstract class Scan {
     }
 
     protected void print() {
+        System.out.println("Running DBSCAN...");
         System.out.println("Total clusters: " + clusters.size());
         for (Cluster cluster : clusters) {
-            System.out.println("Cluster_" + cluster.getId() + " size:" + cluster.getPoints().size());
+            System.out.println("Cluster_" + cluster.getId() + ": " + cluster.getPoints().size() + " points");
         }
     }
 }
