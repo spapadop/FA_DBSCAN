@@ -24,6 +24,11 @@ public class Point {
         this.cluster = -1;
     }
 
+    /**
+     * Computes the euclidean distance of current point with the point given in parameter.
+     * @param otherPoint
+     * @return the distance between the 2 points
+     */
     public double getDistanceFrom(Point otherPoint) {
         double dist = Math.sqrt(Math.pow(this.x - otherPoint.x, 2) + Math.pow(this.y - otherPoint.y, 2));
         return dist;

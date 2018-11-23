@@ -14,7 +14,6 @@ public class DBScan extends Scan {
         scan();
     }
 
-
     public DBScan(double eps, int minPoints, String filename) {
         this.eps = eps;
         this.minPoints = minPoints;
@@ -29,7 +28,7 @@ public class DBScan extends Scan {
         for (Point p : points) {
             if (p.isUndefined()) { //point is unclassified
                 HashSet<Point> neighbours = regionQuery(p);
-                if ((neighbours.size() + 1) < minPoints) {
+                if ((neighbours.size() + 1) < minPoints) { //+1 because we are overpassing the current point
                     p.setLabelNoise();
                 } else {
                     Cluster cluster = new Cluster(clusterCounter++);
@@ -40,7 +39,6 @@ public class DBScan extends Scan {
                 }
             }
         }
-        print();
     }
 
     protected Cluster expandCluster(Point p, HashSet<Point> neighbours, Cluster cluster) {

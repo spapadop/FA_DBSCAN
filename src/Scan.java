@@ -5,14 +5,21 @@ import java.util.List;
 
 public abstract class Scan {
 
-    protected List<Point> points;
-    protected List<Cluster> clusters;
+    protected List<Point> points; //the list of all points of our input file
+    protected List<Cluster> clusters; //the list of all clusters uniformed by our algorithm
     protected int minPoints;
     protected double eps;
-    protected int clusterCounter;
+    protected int clusterCounter; //used to initialize different clusters
 
     abstract void scan();
 
+    /**
+     * Reads the input 2-dimensional data from the specified path.
+     * Data should have a header and be of format:
+     * id   \t  x   \t  y
+     * 1    \t 94.3 \t  -1.394
+     * @param path
+     */
     protected void readData(String path) {
         String line = "";
         int id = 1;
@@ -29,22 +36,30 @@ public abstract class Scan {
         }
     }
 
+    /**
+     * Prints the results of the algorithm including:
+     * Execute Time, number of noise points, total clusters
+     * and for each cluster print the number of points it contains.
+     */
     protected void print() {
-        System.out.println("Running DBSCAN...");
+        System.out.println(" using DBSCAN.");
+        printHeader();
         System.out.println("Total clusters: " + clusters.size());
+        System.out.println("-----------------------------");
         for (Cluster cluster : clusters) {
             System.out.println("Cluster_" + cluster.getId() + ": " + cluster.getPoints().size() + " points");
         }
+        System.out.println("-----------------------------");
+    }
 
+    protected void printHeader(){
+        System.out.println("-----------------------------");
+        System.out.println("Total items: " + points.size());
         int cntNoise=0;
         for(Point p: points){
-            if (p.getCluster()==4){
-                System.out.println(p);
-            }
-            if(p.isNoise()){
-                cntNoise++;
-            }
+            if(p.isNoise()){ cntNoise++; }
         }
-        System.out.println("Noise points: " + cntNoise);
+        System.out.println("Noise: " + cntNoise + " points");
     }
+
 }

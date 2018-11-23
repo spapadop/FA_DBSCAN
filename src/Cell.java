@@ -13,12 +13,11 @@ public class Cell {
         isCore = false;
     }
 
-    public void outputListElements() {
-        for (Point p : list) {
-            System.out.println(p);
-        }
-    }
-
+    /**
+     * Given a point of the cell it returns the nearest point in its neighborhood.
+     * @param point
+     * @return
+     */
     public Point getNearestCorePoint(Point point) {
         Point nearestCorePoint = null;
 
@@ -32,12 +31,36 @@ public class Cell {
         return nearestCorePoint;
     }
 
+    /**
+     * Sets the given cluster number to the relevant cell attribute but also to all points of the cell.
+     * @param clusterNum
+     */
+    public void setClusterNum(int clusterNum) {
+        //isCore = true;
+        this.clusterNum = clusterNum;
+        for (Point p : list) {
+            p.setCluster(clusterNum);
+        }
+    }
+
     public List<Point> getList() {
         return list;
     }
 
     public void setList(List<Point> list) {
         this.list = list;
+    }
+
+    public int getClusterNum() {
+        return clusterNum;
+    }
+
+    public boolean isCore() {
+        return isCore;
+    }
+
+    public void setCore(boolean core) {
+        isCore = core;
     }
 
     public boolean isEmpty() {
@@ -60,23 +83,9 @@ public class Cell {
         list.set(position, newPoint);
     }
 
-    public int getClusterNum() {
-        return clusterNum;
-    }
-
-    public boolean isCore() {
-        return isCore;
-    }
-
-    public void setCore(boolean core) {
-        isCore = core;
-    }
-
-    public void setClusterNum(int clusterNum) {
-        //isCore = true;
-        this.clusterNum = clusterNum;
+    public void outputListElements() {
         for (Point p : list) {
-            p.setCluster(clusterNum);
+            System.out.println(p);
         }
     }
 
