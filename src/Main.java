@@ -29,10 +29,14 @@ public class Main {
     private static long endTime;
 
     private static final int RUN = 2; //1=DBSCAN, 2=FADBSCAN
-    private static final double EPS = 2; //set the value of eps
-    private static final int MINPOINTS = 4; //set the value of MinPoints
-    private static final String FILENAME = "locs.txt"; // set the filename of dataset
-
+    private static final double EPS = 20; //set the value of eps
+    private static final int MINPOINTS = 5; //set the value of MinPoints
+    private static final String DIRECTORY = ".\\input\\";
+    private static final String FILENAME = DIRECTORY + "input-1000000.txt"; // set the filename of dataset
+    /* different input files
+    aggregation.txt  input-100000.txt   input-5000.txt  spiral.txt  twodiamonds.txt
+    input.txt        input-1000000.txt  lsun.txt        target.txt  wingnut.txt
+    */
 
     public static void main(String[] args) {
 
