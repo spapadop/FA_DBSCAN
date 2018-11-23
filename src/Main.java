@@ -29,9 +29,9 @@ public class Main {
     private static long endTime;
 
     private static final int RUN = 2; //1=DBSCAN, 2=FADBSCAN
-    private static final double EPS = 20; //set the value of eps
-    private static final int MINPOINTS = 5; //set the value of MinPoints
-    private static final String FILENAME = "input-100000.txt"; // set the filename of dataset
+    private static final double EPS = 2; //set the value of eps
+    private static final int MINPOINTS = 4; //set the value of MinPoints
+    private static final String FILENAME = "locs.txt"; // set the filename of dataset
 
 
     public static void main(String[] args) {
@@ -46,7 +46,7 @@ public class Main {
         }
 
         endTime = System.nanoTime();
-        System.out.print("Time: " + (endTime - startTime));
+        System.out.print("Time: " + (endTime - startTime)/1000000 + "ms");
 
         scan.print();
 

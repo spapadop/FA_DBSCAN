@@ -1,6 +1,6 @@
 import java.util.Objects;
 
-public class Point {
+public class Point implements Comparable<Object> {
 
     private int id;
     private double x;
@@ -114,4 +114,13 @@ public class Point {
     public PointLabel getLabel() {
         return label;
     }
+
+    @Override
+    public int compareTo(Object o) {
+        Point p = (Point) o;
+        if (this.getX() < p.getX()) return -1;
+        if (this.getX() > p.getX()) return 1;
+        return 0;
+    }
+
 }

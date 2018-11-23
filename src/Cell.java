@@ -43,6 +43,10 @@ public class Cell {
         }
     }
 
+    public void removeAllPoints(){
+        list.clear();
+    }
+
     public List<Point> getList() {
         return list;
     }

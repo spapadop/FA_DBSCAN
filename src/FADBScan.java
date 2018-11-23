@@ -32,18 +32,18 @@ public class FADBScan extends Scan {
         scan();
     }
 
-
+    /**
+     * Execute the FADBSCAN algorithm, calling one function for each implementation step:
+     * 1. Partitioning using HashMap
+     * 2. Determine core points
+     * 3. Merge clusters
+     * 4. Determine border & noise points
+     */
     public void scan() {
-
-        constructGrid(); //Step 1:  using a grid -hashmap
-        //constructBoxes(); //Step 1: using boxes -sorting
-
-        determineCorePoints(); //Step 2:
-
-        mergingClusters(); //Step 3
-
-        DetermineBorderPoint(); //Step 4
-
+        constructGrid();
+        determineCorePoints();
+        mergingClusters();
+        DetermineBorderPoint();
     }
 
     /**
@@ -66,44 +66,6 @@ public class FADBScan extends Scan {
         }
     }
 
-
-    private void constructBoxes() {
-
-        cellWidth = eps / Math.sqrt(2);
-
-        /* Algorithm 4
-        3: cellWidth "=p2
-        4: Initialize G as an empty set of boxes
-        5: Sort P in x-coordinate
-        6: Initialize empty set of points strip
-        7: Add the first point P1 to strip
-        8: for i 2 to jPj do
-        9: q first point of strip
-        10: if Pi:x > q:x + cellWidth then
-        11: AddStripT oGrid(G; strip; cellWidth)
-        12: Remove all points from strip
-        13: Add point Pi to strip
-        14: AddStripT oGrid(G; strip; cellWidth)
-        15: return G
-         */
-    }
-
-    private void addStripToGrid() {
-
-        /* Algorithm 5
-            4: Sort strip in y-coordinate
-            5: Initialize empty set of points Box
-            6: Add the first point of strip to Box
-            7: for i 2 to jPj do
-            8: q j-th point of strip
-            9: if q:y > Box1:y + cellWidth then
-            10: Add Box to G
-            11: Remove all points from Box
-            12: Add q to Box
-            13: Add Box to G
-         */
-    }
-
     /**
      * Determines the core points of our dataset.
      */
@@ -122,10 +84,9 @@ public class FADBScan extends Scan {
                         p.setLabelCore();
                     }
                     grid.getCell(i,j).setCore(true);
-                    //grid.getCell(i, j).setClusterNum(clusterCounter);
                 } else if (cellPoints != 0) {
                     for (Point p : grid.getCell(i, j).getList()) { //of every point of the current cell
-                        Set<Point> numPoints = new HashSet<>(); //calculates number of neighbours (points with distance less than eps) TODO: Maybe simple int counter.
+                        Set<Point> numPoints = new HashSet<>(); //calculates number of neighbours (points with distance less than eps)
                         List<Cell> nCells = grid.calculateNeighboringCells(i, j); //compute the cells within eps distance that can provide possible neighbor points
                         if (nCells.isEmpty()) {
                             continue;
@@ -142,18 +103,16 @@ public class FADBScan extends Scan {
                                     if (numPoints.size() >= minPoints) {
                                         p.setLabelCore();
                                         grid.getCell(i,j).setCore(true);
-                                        // grid.getCell(i, j).setClusterNum(clusterCounter);
                                         break;
                                     }
                                 }
                             }
                             if (numPoints.size() >= minPoints) {
-                                break;
+                                break; //continues the break to the outer loop: next cell to examine.
                             }
                         }
                     }
                 }
-                //clusterCounter++;
             }
         }
     }
@@ -183,7 +142,7 @@ public class FADBScan extends Scan {
     }
 
     /**
-     * Searchs for the every point of current with every point of neighbor cell and merge or separate clusters accordingly.
+     * Searches for the every point of current with every point of neighbor cell and merge or separate clusters accordingly.
      * @param currentCell
      * @param neighborCell
      */
@@ -206,7 +165,6 @@ public class FADBScan extends Scan {
                         return;
                     } else if (cNum != cNum2){
                         neighborCell.setClusterNum(cNum);
-                        //System.out.println(cNum +"=" + cNum2);
                         for (Point p2: points){
                             if (p2.getCluster()==cNum2){
                                 p2.setCluster(cNum);
@@ -287,7 +245,7 @@ public class FADBScan extends Scan {
 
     @Override
     protected void print(){
-        System.out.println(" using FADBSCAN");
+        System.out.println(" using FADBSCAN with EPS " + eps + " and MinPoints " + minPoints);
         printHeader();
 
         Map<Integer,Cluster> map = new HashMap<>();

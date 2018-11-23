@@ -42,7 +42,7 @@ public abstract class Scan {
      * and for each cluster print the number of points it contains.
      */
     protected void print() {
-        System.out.println(" using DBSCAN.");
+        System.out.println(" using DBSCAN with EPS " + eps + " and MinPoints " + minPoints);
         printHeader();
         System.out.println("Total clusters: " + clusters.size());
         System.out.println("-----------------------------");
@@ -54,7 +54,8 @@ public abstract class Scan {
 
     protected void printHeader(){
         System.out.println("-----------------------------");
-        System.out.println("Total items: " + points.size());
+
+        System.out.println("Total points: " + points.size());
         int cntNoise=0;
         for(Point p: points){
             if(p.isNoise()){ cntNoise++; }

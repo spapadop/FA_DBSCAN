@@ -10,6 +10,11 @@ public class Grid {
     public int ncols;
 
 
+    public Grid(double eps) {
+        cellWidth = eps / Math.sqrt(2);
+        grid = new HashMap<>();
+    }
+
     public Grid(int rows, int cols, double eps) {
         cellWidth = eps / Math.sqrt(2);
         nrows = rows;
