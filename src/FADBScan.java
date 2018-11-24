@@ -49,7 +49,8 @@ public class FADBScan extends Scan {
     /**
      * Implements the first step of FA-DBScan.
      * It initializes appropriate thresholds (cellWidth, nRows,nCols) and calling calculateMinMaxDimensions()
-     * and classifies all data points into the proper cell in the grid.
+     * and classifies all data points into the proper cell in the grid. More specifically, each point
+     * of the dataset passes it through the hash function and gets assigned on the corresponding Cell.
      */
     private void constructGrid() {
         cellWidth = eps / Math.sqrt(2);
@@ -68,6 +69,13 @@ public class FADBScan extends Scan {
 
     /**
      * Determines the core points of our dataset.
+     * It iterates through our non-empty grid cells. If a Cell’s list of points size is more than minPoints,
+     * then it sets all points of the cell as core and the cell as a Cell that has core points,
+     * else if the Cell has at least one point it starts examining the cell. For each point of this cell
+     * it calculates its neighbor cells, which are the ones that potentially contain neighbor points
+     * (points that are distanced in less than eps). It then iterates through all neighbor Cells up until
+     * the minPoints value is reached or there are no more Cells to examine. If the point has sufficient neighbors
+     * (at least minPoints) then it sets is as a core point and it sets its Cell as a Cell that has a core point.
      */
     private void determineCorePoints() {
         for (int i = 0; i < grid.nrows; i++) { // for all rows of grid
@@ -119,6 +127,10 @@ public class FADBScan extends Scan {
 
     /**
      * Performs the merging clusters step.
+     *It runs an iteration over our hashmap and if current Cell has a core point, it calculate its neighbor cells
+     * and for every neighbor cell that has a core point we call findNeighborCluster function
+     * which decides on cluster merging.
+     *
      */
     private void mergingClusters() {
         for (int i = 0; i < grid.getLength(); i++) {
@@ -143,8 +155,25 @@ public class FADBScan extends Scan {
 
     /**
      * Searches for the every point of current with every point of neighbor cell and merge or separate clusters accordingly.
-     * @param currentCell
-     * @param neighborCell
+     * It runs an iteration over our hashmap and if current Cell has a core point, it calculates its neighbor cells
+     * and for every neighbor cell that has a core point it call findNeighborCluster function
+     * which decides on cluster merging. Inside findNeighborCluster function it searches for the every point of
+     * current Cell with every point of neighbor cell and merges or separates clusters accordingly.
+     * For ease of explanation of our algorithm it define:
+     * pointA: the current point it are examining
+     * pointB: the neighbor cell’s point
+     * clustered: point that already belongs to a cluster
+     * unclustered: point that has no cluster assigned yet
+     *
+     * Here is the implemented logic of following 4 cases:
+     * If both pointA and pointB are unclustered it creates a new cluster and assign both points’ cells into this newly created cluster number.
+     * If pointA is clustered, but pointB is unclustered, then it assigns pointA’s cluster number to all points of pointB’s cell.
+     * If the pointA is unclustered, but pointB is clustered, then it assigns pointB’s cluster number to all points of pointA’s cell.
+     * If both pointA and pointB are clustered but belong in different clusters, then it sets pointA’s cluster number to all points that have pointB’s cluster number.
+     *
+     *
+     * @param currentCell cell that we currently examining
+     * @param neighborCell neighbor cell of our current cell
      */
     private void findNeighborCluster(Cell currentCell, Cell neighborCell) {
         for (Point p : currentCell.getList()) { //for every point of the current cell we are checking
@@ -153,21 +182,21 @@ public class FADBScan extends Scan {
                     int cNum = p.getCluster();
                     int cNum2 = pn.getCluster();
 
-                    if (cNum==-1 && cNum2 ==-1) {
+                    if (cNum==-1 && cNum2 ==-1) { //both points unclustered
                         currentCell.setClusterNum(cNum);
                         neighborCell.setClusterNum(clusterCounter);
                         return;
-                    } else if (cNum!=-1 && cNum2 == -1) {
+                    } else if (cNum!=-1 && cNum2 == -1) { //current point clustered, neighbor point unclustered
                         neighborCell.setClusterNum(cNum);
                         return;
-                    } else if (cNum==-1 && cNum2 !=-1){
+                    } else if (cNum==-1 && cNum2 !=-1){ //current point unclustered, neighbor point clustered
                         currentCell.setClusterNum(cNum);
                         return;
-                    } else if (cNum != cNum2){
+                    } else if (cNum != cNum2){ //both points clustered but different in clusters
                         neighborCell.setClusterNum(cNum);
-                        for (Point p2: points){
-                            if (p2.getCluster()==cNum2){
-                                p2.setCluster(cNum);
+                        for (Point t: points){
+                            if (t.getCluster()==cNum2){
+                                t.setCluster(cNum);
                             }
                         }
                         return;
@@ -179,6 +208,11 @@ public class FADBScan extends Scan {
 
     /**
      * Identifies the border & noise points of the dataset.
+     * This step starts with an iteration over all non-empty cells of the grid. Then if the Cell has no core points
+     * it searches for each point of the current Cell its nearest point among all neighbors.
+     * If the nearest point either is not found (which means that all neighbor cells are empty)
+     * or if the nearest point is distanced more than eps value away, then it assigns the current point as a noise.
+     * Else, it assigns it as a border point and assign the nearest neighbor point’s cluster number to it.
      */
     private void DetermineBorderPoint() {
         for (int i = 0; i < grid.getLength(); i++) {

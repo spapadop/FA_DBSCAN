@@ -15,8 +15,8 @@ public class Cell {
 
     /**
      * Given a point of the cell it returns the nearest point in its neighborhood.
-     * @param point
-     * @return
+     * @param point the point instance to examine its distance from current point.
+     * @return the nearest point
      */
     public Point getNearestCorePoint(Point point) {
         Point nearestCorePoint = null;
@@ -33,7 +33,7 @@ public class Cell {
 
     /**
      * Sets the given cluster number to the relevant cell attribute but also to all points of the cell.
-     * @param clusterNum
+     * @param clusterNum the cluster number to be assigned to the Cell and its points
      */
     public void setClusterNum(int clusterNum) {
         //isCore = true;
