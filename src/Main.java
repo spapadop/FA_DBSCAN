@@ -13,7 +13,7 @@
  *
  * Date: 28 November 2018
  *
- * Program accepts three (3)  arguments:
+ * Program accepts four (4)  arguments:
  * 	1. the algorithm that you want to run (1=DBSCAN, 2=FADBSCAN)
  * 	2. the value of EPS
  * 	3. the value of MinPoints
@@ -32,7 +32,7 @@ public class Main {
     private static final double EPS = 20; //set the value of eps
     private static final int MINPOINTS = 5; //set the value of MinPoints
     private static final String DIRECTORY = ".\\input\\";
-    private static final String FILENAME = DIRECTORY + "input-1000000.txt"; // set the filename of dataset
+    private static final String FILENAME = DIRECTORY + "input-100000.txt"; // set the filename of dataset
     /* different input files
     aggregation.txt  input-100000.txt   input-5000.txt  spiral.txt  twodiamonds.txt
     input.txt        input-1000000.txt  lsun.txt        target.txt  wingnut.txt
