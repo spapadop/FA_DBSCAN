@@ -28,11 +28,11 @@ public class Main {
     private static long startTime;
     private static long endTime;
 
-    private static final int RUN = 2; //1=DBSCAN, 2=FADBSCAN
-    private static final double EPS = 20; //set the value of eps
-    private static final int MINPOINTS = 5; //set the value of MinPoints
-    private static final String DIRECTORY = ".\\input\\";
-    private static final String FILENAME = DIRECTORY + "input-100000.txt"; // set the filename of dataset
+    private static int RUN = 2; //1=DBSCAN, 2=FADBSCAN
+    private static double EPS = 20; //set the value of eps
+    private static int MINPOINTS = 5; //set the value of MinPoints
+    private static String DIRECTORY = ".\\input\\";
+    private static String FILENAME = DIRECTORY + "input-100000.txt"; // set the filename of dataset
     /* different input files
     aggregation.txt  input-100000.txt   input-5000.txt  spiral.txt  twodiamonds.txt
     input.txt        input-1000000.txt  lsun.txt        target.txt  wingnut.txt
@@ -40,17 +40,28 @@ public class Main {
 
     public static void main(String[] args) {
 
-        startTime = System.nanoTime();
+
+        if(args.length != 4){
+            System.out.println("Please enter 4 arguments: <1,2> <eps> <minPoints> <dataset> ");
+            System.exit(0);
+        } else {
+            RUN = Integer.parseInt(args[0]);
+            EPS = Double.parseDouble(args[1]);
+            MINPOINTS = Integer.parseInt(args[2]);
+            FILENAME = DIRECTORY + args[3];
+        }
+
+        startTime = System.currentTimeMillis();
 
         switch (RUN){
-            case 1: scan = new DBScan(EPS,MINPOINTS, FILENAME);
+            case 1: scan = new DBScan(EPS,MINPOINTS,FILENAME);
                 break;
-            case 2: scan = new FADBScan(EPS,MINPOINTS, FILENAME);
+            case 2: scan = new FADBScan(EPS,MINPOINTS,FILENAME);
                 break;
         }
 
-        endTime = System.nanoTime();
-        System.out.print("Time: " + (endTime - startTime)/1000000 + "ms");
+        endTime = System.currentTimeMillis();
+        System.out.print("Time: " + (endTime - startTime) + "ms");
 
         scan.print();
 
