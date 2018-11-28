@@ -29,10 +29,9 @@ public class Main {
     private static long endTime;
 
     private static int RUN = 2; //1=DBSCAN, 2=FADBSCAN
-    private static double EPS = 20; //set the value of eps
+    private static double EPS = 0.5; //set the value of eps
     private static int MINPOINTS = 5; //set the value of MinPoints
-    private static String DIRECTORY = ".\\input\\";
-    private static String FILENAME = DIRECTORY + "input-100000.txt"; // set the filename of dataset
+    private static String FILENAME = "input-5000.txt"; // set the filename of dataset
     /* different input files
     aggregation.txt  input-100000.txt   input-5000.txt  spiral.txt  twodiamonds.txt
     input.txt        input-1000000.txt  lsun.txt        target.txt  wingnut.txt
@@ -48,7 +47,7 @@ public class Main {
             RUN = Integer.parseInt(args[0]);
             EPS = Double.parseDouble(args[1]);
             MINPOINTS = Integer.parseInt(args[2]);
-            FILENAME = DIRECTORY + args[3];
+            FILENAME = args[3];
         }
 
         startTime = System.currentTimeMillis();
